@@ -23,7 +23,7 @@ namespace AppleMusic_Discord_Status {
         public bool DiscordIsOpen { get; set; }
         public bool AppleMusicIsOpen { get; set; }
         public bool MiniPlayerIsOpen { get; set; }
- 
+
         public static bool DisplayMusicStatusToggleState {
             get {
                 if (ApplicationData.Current.LocalSettings.Values.TryGetValue("DisplayMusicStatus", out object value)) {
@@ -123,7 +123,7 @@ namespace AppleMusic_Discord_Status {
             if (
                 this.DiscordIsOpen &&
                 this.AppleMusicIsOpen &&
-                this.MiniPlayerIsOpen && 
+                this.MiniPlayerIsOpen &&
                 DisplayMusicStatusToggleState
             ) {
                 (string songName, string songArtist, string songAlbum, string timeLeft, bool isPlaying) = AppleMusicScraper.Scrape();
@@ -176,8 +176,8 @@ namespace AppleMusic_Discord_Status {
         /// <param name="AppleMusicStatusIcon">Apple Music status FontIcon.</param>
         /// <param name="MiniPlayerStatusIcon">Apple Music Mini Player status FontIcon.</param>
         public void UpdateStatusIcons(
-            FontIcon DiscordStatusIcon, 
-            FontIcon AppleMusicStatusIcon, 
+            FontIcon DiscordStatusIcon,
+            FontIcon AppleMusicStatusIcon,
             FontIcon MiniPlayerStatusIcon
         ) {
             Debug.WriteLine($"DiscordIsOpen: {this.DiscordIsOpen}");
@@ -208,23 +208,34 @@ namespace AppleMusic_Discord_Status {
         /// Adds application shortcut to Windows startup folder, so that it launches at startup.
         /// </summary>
         private static void AddStartupShortcut() {
-            Type t = Type.GetTypeFromCLSID(new Guid(Constants.WindowsScriptHostShellObjectGUID)); 
-            dynamic shell = Activator.CreateInstance(t!)!;
+            Type t = Type.GetTypeFromCLSID(new Guid(Constants.WindowsScriptHostShellObjectGUID));
+            dynamic shell = Activator.CreateInstance(t);
+
+            if (shell == null) return;
 
             try {
                 dynamic lnk = shell.CreateShortcut(Constants.AppShortcutPath);
+
+                if (lnk == null) {
+                    Marshal.FinalReleaseComObject(shell);
+                    return;
+                }
 
                 try {
                     lnk.TargetPath = Constants.AppExePath;
                     lnk.IconLocation = $"{Constants.AppExePath}, 0";
                     lnk.Save();
+                } catch (UnauthorizedAccessException) {
+                    Debug.WriteLine("Unauthorized access to save shortcut.");
                 } finally {
                     Marshal.FinalReleaseComObject(lnk);
                 }
+
             } finally {
                 Marshal.FinalReleaseComObject(shell);
             }
         }
+
 
         /// <summary>
         /// Removes application shortcut from Windows startup folder, so that it will not launch at startup.

@@ -60,7 +60,10 @@ namespace AppleMusic_Discord_Status {
                     new PropertyCondition(AutomationElement.ClassNameProperty, "WinUIDesktopWin32WindowClass")
                 )
             );
-            return new IntPtr(miniPlayer.Current.NativeWindowHandle);
+
+            return miniPlayer != null
+                ? new nint(miniPlayer.Current.NativeWindowHandle)
+                : IntPtr.Zero;
         }
 
         /// <summary>
