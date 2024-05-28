@@ -2,18 +2,18 @@
     Apple Music - Discord Status<br/>
 </h2>
 <div align="center">
-    <img alt="Demo" src="" />
+    <img alt="Demo" src="screenshot.png" />
 </div>
 
 <br/>
+
+# COMING SOON
 
 ## Features
 - Display Apple Music as Discord Status
 - Toggle Discord Music Status
 - Toggle Show Status on Pause
 - Toggle Launch at Startup
-
-## Screenshots
 
 ## Supports
 - Windows 10+

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AppleMusic_Discord_Status (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "AppleMusic_Discord_Status (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
