@@ -180,10 +180,6 @@ namespace AppleMusic_Discord_Status {
             FontIcon AppleMusicStatusIcon,
             FontIcon MiniPlayerStatusIcon
         ) {
-            Debug.WriteLine($"DiscordIsOpen: {this.DiscordIsOpen}");
-            Debug.WriteLine($"AppleMusicIsOpen: {this.AppleMusicIsOpen}");
-            Debug.WriteLine($"MiniPlayerIsOpen: {this.MiniPlayerIsOpen}");
-
             UpdateStatusIcon(DiscordStatusIcon, this.DiscordIsOpen);
             UpdateStatusIcon(AppleMusicStatusIcon, this.AppleMusicIsOpen);
             UpdateStatusIcon(MiniPlayerStatusIcon, this.MiniPlayerIsOpen);
@@ -235,7 +231,6 @@ namespace AppleMusic_Discord_Status {
                 Marshal.FinalReleaseComObject(shell);
             }
         }
-
 
         /// <summary>
         /// Removes application shortcut from Windows startup folder, so that it will not launch at startup.

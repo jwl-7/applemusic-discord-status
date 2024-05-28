@@ -1,6 +1,6 @@
-﻿using DiscordRPC;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+
 namespace AppleMusic_Discord_Status.Test {
     [TestClass]
     public class DiscordRichPresenceTests {

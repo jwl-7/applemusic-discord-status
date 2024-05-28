@@ -23,7 +23,7 @@ namespace AppleMusic_Discord_Status {
         public const string ITunesApiUrl = "https://itunes.apple.com/search?term=";
         public const string WindowsScriptHostShellObjectGUID = "72C24DD5-D70A-438B-8A42-98424B88AFB8";
         public static string AppExePath = Process.GetCurrentProcess().MainModule?.FileName;
-        public static string AppShortcutPath = Path.Join(WindowsStartupFolder, AppShortcutName);
         public static string WindowsStartupFolder = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+        public static string AppShortcutPath = Path.Join(WindowsStartupFolder, AppShortcutName);
     }
 }
