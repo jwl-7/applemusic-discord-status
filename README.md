@@ -7,8 +7,6 @@
 
 <br/>
 
-# COMING SOON
-
 ## Features
 - Display Apple Music as Discord Status
 - Toggle Discord Music Status
