@@ -70,7 +70,7 @@ namespace AppleMusic_Discord_Status {
 
             if (this.isInitialized) {
                 RichPresence presence = new() {
-                    Details = details,
+                    Details = details.PadRight(2, '\0'),
                     State = state,
                     Timestamps = isPlaying ? Timestamps.FromTimeSpan(ParseTimeRemaining(songEnd)) : null,
                     Assets = new Assets() {
@@ -81,7 +81,7 @@ namespace AppleMusic_Discord_Status {
                     Buttons = [
                         new() {
                             Label = Constants.DiscordButtonLabel,
-                            Url = songUrl
+                            Url = songUrl ?? Constants.AppleMusicUrl
                         }
                     ]
                 };

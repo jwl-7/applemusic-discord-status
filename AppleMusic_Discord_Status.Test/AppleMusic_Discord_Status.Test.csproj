@@ -35,7 +35,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240428000" />
 		<PackageReference Include="MSTest.TestAdapter" Version="3.4.1" />
 		<PackageReference Include="MSTest.TestFramework" Version="3.4.1" />
 		<PackageReference Include="Microsoft.TestPlatform.TestHost" Version="17.10.0">
@@ -46,9 +45,6 @@
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.WindowsDesktop.App" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\AppleMusic_Discord_Status\AppleMusic_Discord_Status.csproj" />
 	</ItemGroup>
 

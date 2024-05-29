@@ -11,9 +11,9 @@
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
-            <SvgImageSource x:Key="DiscordIcon" UriSource="ms-appx:///Assets/Discord_square_icon.svg"/>
-            <SvgImageSource x:Key="AppleMusicIcon" UriSource="ms-appx:///Assets/Apple_Music_icon.svg"/>
-            <SvgImageSource x:Key="AppleMusicIconGray" UriSource="ms-appx:///Assets/Apple_Music_icon_gray.svg"/>
+            <SvgImageSource x:Key="DiscordIcon" UriSource="ms-appx:///Assets/Discord_square_icon.svg" />
+            <SvgImageSource x:Key="AppleMusicIcon" UriSource="ms-appx:///Assets/Apple_Music_icon.svg" />
+            <SvgImageSource x:Key="AppleMusicIconGray" UriSource="ms-appx:///Assets/Apple_Music_icon_gray.svg" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

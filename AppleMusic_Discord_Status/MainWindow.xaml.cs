@@ -1,5 +1,6 @@
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using System.Diagnostics;
 using Windows.Graphics;
 
 
@@ -28,6 +29,7 @@ namespace AppleMusic_Discord_Status {
             appWindowPresenter.IsMaximizable = false;
 
             this.AppWindow.Resize(new SizeInt32(Constants.AppWindowWidth, Constants.AppWindowHeight));
+            this.AppWindow.SetIcon(Constants.AppIcon);
             this.ExtendsContentIntoTitleBar = true;
         }
 
@@ -35,18 +37,18 @@ namespace AppleMusic_Discord_Status {
         /// Initializes toggle switches with saved states.
         /// </summary>
         private void InitializeToggleSwitches() {
-            this.DisplayMusicToggleSwitch.IsOn = AppManager.DisplayMusicStatusToggleState;
-            this.ShowStatusOnPauseToggleSwitch.IsOn = AppManager.ShowStatusOnPauseToggleState;
-            this.LaunchAtStartupToggleSwitch.IsOn = AppManager.LaunchAtStartupToggleState;
+            this.DisplayMusicToggleSwitch.IsOn = AppSettings.DisplayMusicStatusToggle;
+            this.ShowStatusOnPauseToggleSwitch.IsOn = AppSettings.ShowStatusOnPauseToggle;
+            this.LaunchAtStartupToggleSwitch.IsOn = AppSettings.LaunchAtStartupToggle;
 
             this.DisplayMusicToggleSwitch.Toggled += (sender, args) => {
-                AppManager.DisplayMusicStatusToggleState = this.DisplayMusicToggleSwitch.IsOn;
+                AppSettings.DisplayMusicStatusToggle = this.DisplayMusicToggleSwitch.IsOn;
             };
             this.ShowStatusOnPauseToggleSwitch.Toggled += (sender, args) => {
-                AppManager.ShowStatusOnPauseToggleState = this.ShowStatusOnPauseToggleSwitch.IsOn;
+                AppSettings.ShowStatusOnPauseToggle = this.ShowStatusOnPauseToggleSwitch.IsOn;
             };
             this.LaunchAtStartupToggleSwitch.Toggled += (sender, args) => {
-                AppManager.LaunchAtStartupToggleState = this.LaunchAtStartupToggleSwitch.IsOn;
+                AppSettings.LaunchAtStartupToggle = this.LaunchAtStartupToggleSwitch.IsOn;
             };
         }
 
@@ -54,7 +56,7 @@ namespace AppleMusic_Discord_Status {
         /// Updates application status icons.
         /// </summary>
         public void UpdateStatusIcons() {
-            App.AppManager.UpdateStatusIcons(this.DiscordStatusIcon, this.AppleMusicStatusIcon, this.MiniPlayerStatusIcon);
+            AppManager.UpdateStatusIcons(this.DiscordStatusIcon, this.AppleMusicStatusIcon, this.MiniPlayerStatusIcon);
         }
     }
 }

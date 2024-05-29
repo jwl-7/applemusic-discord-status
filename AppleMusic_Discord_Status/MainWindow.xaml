@@ -54,9 +54,7 @@
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="0" Source="{StaticResource DiscordIcon}" Width="24" Height="24"/>
                 <TextBlock Grid.Column="1" Text="Discord"/>
-                <FontIcon 
-                    Grid.Column="2"
-                    x:Name="DiscordStatusIcon"/>
+                <FontIcon Grid.Column="2" x:Name="DiscordStatusIcon"/>
             </Grid>
 
             <!-- Apple Music Status -->
@@ -68,9 +66,7 @@
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="0" Source="{StaticResource AppleMusicIcon}" Width="24" Height="24"/>
                 <TextBlock Grid.Column="1" Text="Apple Music"/>
-                <FontIcon 
-                    Grid.Column="2"
-                    x:Name="AppleMusicStatusIcon"/>
+                <FontIcon Grid.Column="2" x:Name="AppleMusicStatusIcon"/>
             </Grid>
 
             <!-- Mini Player Status -->
@@ -82,9 +78,7 @@
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="0" Source="{StaticResource AppleMusicIconGray}" Width="24" Height="24"/>
                 <TextBlock Grid.Column="1" Text="Mini Player"/>
-                <FontIcon 
-                    Grid.Column="2"
-                    x:Name="MiniPlayerStatusIcon"/>
+                <FontIcon Grid.Column="2" x:Name="MiniPlayerStatusIcon"/>
             </Grid>
         </StackPanel>
 
