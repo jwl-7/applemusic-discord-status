@@ -26,7 +26,6 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         public static bool DisplayMusicStatusToggle {
             get {
-                Debug.WriteLine($"asdfasdfsd = {GetSettingsObject()}");
                 return GetSettingsObject().DisplayMusicStatus;
             }
             set {
@@ -41,9 +40,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         public static bool ShowStatusOnPauseToggle {
             get {
-                dynamic settingsObject = GetSettingsObject();
-                return settingsObject.ShowStatusOnPause;
-                //return GetSettingsObject().ShowStatusOnPause;
+                return GetSettingsObject().ShowStatusOnPause;
             }
             set {
                 dynamic settingsObject = GetSettingsObject();

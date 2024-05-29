@@ -1,9 +1,38 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using DiscordRPC;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using System;
+using System.Threading.Tasks;
 
 
 namespace AppleMusic_Discord_Status.Test {
     [TestClass]
     public class DiscordRichPresenceTests {
+        [TestMethod]
+        public void UpdatePresence_CallsSetPresence_WhenInitialized() {
+            Mock<DiscordRpcClient> mockClient = new("fake_token");
+            mockClient.Setup(c => c.Initialize());
+            mockClient.Setup(c => c.SetPresence(It.IsAny<RichPresence>()));
+
+            Mock<DiscordRichPresence> mockDiscordPresence = new() { CallBase = true };
+            mockDiscordPresence.Setup(d => d.client).Returns(mockClient.Object);
+            mockDiscordPresence.Object.isInitialized = true;
+            mockDiscordPresence.Object.UpdatePresence("details", "state", "albumArtwork", "songEnd", "songUrl", true);
+
+            mockClient.Verify(c => c.SetPresence(It.IsAny<RichPresence>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task InitializeClient_SetsIsInitializedToTrue_WhenReady() {
+            Mock<DiscordRpcClient> mockClient = new("fake_token");
+            Mock<DiscordRichPresence> mockDiscordPresence = new() { CallBase = true };
+
+            mockDiscordPresence.Setup(d => d.client).Returns(mockClient.Object);
+            mockClient.Raise(c => c.OnReady += null, EventArgs.Empty);
+
+            Assert.IsTrue(mockDiscordPresence.Object.isInitialized);
+        }
+
         [TestMethod]
         public void ParseTime_ValidTimeSeconds() {
             string oneDigit = "-:1";
