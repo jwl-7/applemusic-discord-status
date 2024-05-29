@@ -106,10 +106,10 @@ namespace AppleMusic_Discord_Status {
         /// <param name="status">Current application status.</param>
         private static void UpdateStatusIcon(FontIcon fontIcon, bool status) {
             if (status) {
-                fontIcon.Glyph = "\uE73E";
+                fontIcon.Glyph = Constants.CheckMark;
                 fontIcon.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green);
             } else {
-                fontIcon.Glyph = "\uE711";
+                fontIcon.Glyph = Constants.Cancel;
                 fontIcon.Foreground = new SolidColorBrush(Microsoft.UI.Colors.IndianRed);
             }
         }

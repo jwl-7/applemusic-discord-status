@@ -17,6 +17,8 @@ namespace AppleMusic_Discord_Status {
         public const string AppShortcutName = "AppleMusic_Discord_Status.lnk";
         public const string AppleMusicAppName = "AppleMusic";
         public const string AppleMusicUrl = "https://music.apple.com/";
+        public const string Cancel = "\uE711";
+        public const string CheckMark = "\uE73E";
         public const string DiscordAppName = "Discord";
         public const string DiscordButtonLabel = "Listen on Apple Music";
         public const string DiscordDefaultArtwork = "no_artwork";
