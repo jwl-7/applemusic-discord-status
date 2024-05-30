@@ -16,9 +16,9 @@ namespace AppleMusic_Discord_Status {
         /// Settings object for use with JSON serialization/deserialization.
         /// </summary>
         internal class SettingsObject {
-            public bool DisplayMusicStatus { get; set; }
-            public bool ShowStatusOnPause { get; set; }
-            public bool LaunchAtStartup { get; set; }
+            internal bool DisplayMusicStatus { get; set; }
+            internal bool ShowStatusOnPause { get; set; }
+            internal bool LaunchAtStartup { get; set; }
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace AppleMusic_Discord_Status {
                 return GetSettingsObject().DisplayMusicStatus;
             }
             set {
-                dynamic settingsObject = GetSettingsObject();
+                SettingsObject settingsObject = GetSettingsObject();
                 settingsObject.DisplayMusicStatus = value;
                 UpdateSettings(settingsObject);
             }
@@ -38,12 +38,12 @@ namespace AppleMusic_Discord_Status {
         /// <summary>
         /// Show Status on Pause toggle setting.
         /// </summary>
-        public static bool ShowStatusOnPauseToggle {
+        internal static bool ShowStatusOnPauseToggle {
             get {
                 return GetSettingsObject().ShowStatusOnPause;
             }
             set {
-                dynamic settingsObject = GetSettingsObject();
+                SettingsObject settingsObject = GetSettingsObject();
                 settingsObject.ShowStatusOnPause = value;
                 UpdateSettings(settingsObject);
             }
@@ -52,12 +52,12 @@ namespace AppleMusic_Discord_Status {
         /// <summary>
         /// Launch at Startup toggle setting.
         /// </summary>
-        public static bool LaunchAtStartupToggle {
+        internal static bool LaunchAtStartupToggle {
             get {
                 return GetSettingsObject().LaunchAtStartup;
             }
             set {
-                dynamic settingsObject = GetSettingsObject();
+                SettingsObject settingsObject = GetSettingsObject();
                 settingsObject.LaunchAtStartup = value;
                 UpdateSettings(settingsObject);
 
@@ -68,7 +68,7 @@ namespace AppleMusic_Discord_Status {
         /// <summary>
         /// Creates AppleMusic_Discord_Status/settings.json in AppData folder.
         /// </summary>
-        public static void InitializeSettings() {
+        internal static void InitializeSettings() {
             Directory.CreateDirectory(Constants.AppDataSettingsFolder);
             if (!File.Exists(Constants.AppDataSettingsPath)) InitializeDefaultSettings();
         }
@@ -76,7 +76,7 @@ namespace AppleMusic_Discord_Status {
         /// <summary>
         /// Writes default settings to settings.json.
         /// </summary>
-        public static void InitializeDefaultSettings() {
+        internal static void InitializeDefaultSettings() {
             string DefaultSettingsJSON = JsonSerializer.Serialize(Constants.AppDefaultSettings);
             File.WriteAllText(Constants.AppDataSettingsPath, DefaultSettingsJSON);
         }
@@ -85,7 +85,7 @@ namespace AppleMusic_Discord_Status {
         /// Gets settings object from settings.json.
         /// </summary>
         /// <returns>Settings object.</returns>
-        public static SettingsObject GetSettingsObject() {
+        internal static SettingsObject GetSettingsObject() {
             string JSON = File.ReadAllText(Constants.AppDataSettingsPath);
             return JsonSerializer.Deserialize<SettingsObject>(JSON);
         }
@@ -94,7 +94,7 @@ namespace AppleMusic_Discord_Status {
         /// Update settings.json with settings object.
         /// </summary>
         /// <param name="settingsObject">Object that includes all settings.</param>
-        public static void UpdateSettings(SettingsObject settingsObject) {
+        internal static void UpdateSettings(SettingsObject settingsObject) {
             string JSON = JsonSerializer.Serialize(settingsObject);
             File.WriteAllText(Constants.AppDataSettingsPath, JSON);
         }
@@ -102,7 +102,7 @@ namespace AppleMusic_Discord_Status {
         /// <summary>
         /// Adds application shortcut to Windows startup folder, so that it launches at startup.
         /// </summary>
-        private static void AddStartupShortcut() {
+        internal static void AddStartupShortcut() {
             Type t = Type.GetTypeFromCLSID(new Guid(Constants.WindowsScriptHostShellObjectGUID));
             dynamic shell = Activator.CreateInstance(t);
 
@@ -134,7 +134,7 @@ namespace AppleMusic_Discord_Status {
         /// <summary>
         /// Removes application shortcut from Windows startup folder, so that it will not launch at startup.
         /// </summary>
-        private static void RemoveStartupShortcut() {
+        internal static void RemoveStartupShortcut() {
             File.Delete(Constants.AppShortcutPath);
         }
     }

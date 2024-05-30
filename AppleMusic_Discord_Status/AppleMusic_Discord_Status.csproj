@@ -1,76 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
+		<ApplicationIcon>Assets\Apple_Music_icon.ico</ApplicationIcon>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+		<AppxBundle>Never</AppxBundle>
+		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+		<DefaultLanguage>en-us</DefaultLanguage>
+		<EnableMsixTooling>true</EnableMsixTooling>
+		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+		<GenerateTestArtifacts>True</GenerateTestArtifacts>
+		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 		<OutputType>WinExe</OutputType>
+		<PackageCertificateThumbprint>54553424542B41E83C6B9AA8C73950BA4962A5E9</PackageCertificateThumbprint>
+		<PlatformTarget>x64</PlatformTarget>
+		<Platforms>x64</Platforms>
+		<PublishProfile>win-$(Platform).pubxml</PublishProfile>
+		<PublishSingleFile>true</PublishSingleFile>
+		<RootNamespace>AppleMusic_Discord_Status</RootNamespace>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<SelfContained>true</SelfContained>
+		<StartupObject>AppleMusic_Discord_Status.Program</StartupObject>
+		<SupportedOSPlatformVersion>10.0.22621.0</SupportedOSPlatformVersion>
 		<TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-		<RootNamespace>AppleMusic_Discord_Status</RootNamespace>
-		<ApplicationManifest>app.manifest</ApplicationManifest>
-		<Platforms>x86;x64</Platforms>
-		<RuntimeIdentifiers Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &gt;= 8">win-x86;win-x64</RuntimeIdentifiers>
-		<PublishProfile>win-$(Platform).pubxml</PublishProfile>
 		<UseWinUI>true</UseWinUI>
-		<EnableMsixTooling>true</EnableMsixTooling>
-		<SupportedOSPlatformVersion>10.0.22621.0</SupportedOSPlatformVersion>
-		<ApplicationIcon>Assets\Apple_Music_icon.ico</ApplicationIcon>
-		<DefaultLanguage>en-us</DefaultLanguage>
-		<PlatformTarget>x64</PlatformTarget>
-		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-		<PackageCertificateThumbprint>54553424542B41E83C6B9AA8C73950BA4962A5E9</PackageCertificateThumbprint>
-		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
-		<GenerateTestArtifacts>True</GenerateTestArtifacts>
-		<AppxBundle>Never</AppxBundle>
-		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-		<StartupObject>AppleMusic_Discord_Status.Program</StartupObject>
-		<PublishSingleFile>true</PublishSingleFile>
-		<SelfContained>true</SelfContained>
 		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 		<WindowsPackageType>None</WindowsPackageType>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="Assets\SplashScreen.scale-200.png" />
-		<Content Include="Assets\LockScreenLogo.scale-200.png" />
-		<Content Include="Assets\Square150x150Logo.scale-200.png" />
-		<Content Include="Assets\Square44x44Logo.scale-200.png" />
-		<Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-		<Content Include="Assets\Wide310x150Logo.scale-200.png" />
-	</ItemGroup>
-
-	<ItemGroup>
+		<Manifest Include="$(ApplicationManifest)" />
 		<PackageReference Include="DiscordRichPresence" Version="1.2.1.24" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240428000" />
-		<Manifest Include="$(ApplicationManifest)" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<FrameworkReference Include="Microsoft.WindowsDesktop.App" />
 		<InternalsVisibleTo Include="AppleMusic_Discord_Status.Test" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
 		<ProjectCapability Include="Msix" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Update="Assets\Apple_Music_icon.ico">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Update="Assets\Apple_Music_icon.svg">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Update="Assets\Apple_Music_icon_gray.svg">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Update="Assets\Apple_Music_icon_purple.svg">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Update="Assets\Discord_square_icon.svg">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">

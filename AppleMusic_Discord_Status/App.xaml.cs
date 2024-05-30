@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using DiscordRPC;
+using Microsoft.UI.Xaml;
 using System.Timers;
 
 
@@ -7,15 +8,16 @@ namespace AppleMusic_Discord_Status {
     /// Main application class.
     /// </summary>
     public partial class App : Application {
-        internal Window m_window;
-        internal Timer statusRefreshTimer;
-        internal DiscordRichPresence DiscordBot { get; set; }
-        internal string currentSong;
-        internal string currentAlbumArtwork;
-        internal string currentSongUrl;
-        internal static bool DiscordIsOpen { get; set; }
-        internal static bool AppleMusicIsOpen { get; set; }
-        internal static bool MiniPlayerIsOpen { get; set; }
+        internal Window MainWindow;
+        internal static Timer AppTimer;
+        internal static DiscordRpcClient DiscordClient;
+        internal static string CurrentSong;
+        internal static string CurrentAlbumArtwork;
+        internal static string CurrentSongUrl;
+        internal static bool DiscordClientIsInitialized;
+        internal static bool DiscordIsOpen;
+        internal static bool AppleMusicIsOpen;
+        internal static bool MiniPlayerIsOpen;
 
         /// <summary>
         /// Initializes application and AppManager instance.
@@ -23,8 +25,8 @@ namespace AppleMusic_Discord_Status {
         public App() {
             this.InitializeComponent();
             AppSettings.InitializeSettings();
-            InitializeTimer();
-            InitializeDiscordBot();
+            AppManager.InitializeTimer();
+            DiscordRichPresence.InitializeDiscordClient();
         }
 
         /// <summary>
@@ -32,25 +34,9 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="args">Launch event args..</param>
         protected override void OnLaunched(LaunchActivatedEventArgs args) {
-            m_window = new MainWindow();
-            m_window.Activate();
-            m_window.Closed += this.OnAppExit;
-        }
-
-        /// <summary>
-        /// Initializes refresh timer for updating Discord status and application states.
-        /// </summary>
-        private void InitializeTimer() {
-            this.statusRefreshTimer = new Timer(Constants.AppRefreshRate);
-            this.statusRefreshTimer.Elapsed += AppManager.OnStatusRefreshTimerElapsed;
-            this.statusRefreshTimer.Start();
-        }
-
-        /// <summary>
-        /// Initializes Discord RPC client.
-        /// </summary>
-        private void InitializeDiscordBot() {
-            this.DiscordBot = new DiscordRichPresence();
+            MainWindow = new MainWindow();
+            MainWindow.Activate();
+            MainWindow.Closed += this.OnAppExit;
         }
 
         /// <summary>
@@ -60,7 +46,7 @@ namespace AppleMusic_Discord_Status {
         /// <param name="_">Sender.</param>
         /// <param name="__">Args.</param>
         private void OnAppExit(object _, WindowEventArgs __) {
-            this.DiscordBot.Dispose();
+            DiscordRichPresence.Dispose();
         }
     }
 }

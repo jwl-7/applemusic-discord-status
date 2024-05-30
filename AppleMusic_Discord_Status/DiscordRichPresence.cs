@@ -8,43 +8,33 @@ namespace AppleMusic_Discord_Status {
     /// Provides functionality for managing Discord status via Rich Presence.
     /// </summary>
     internal class DiscordRichPresence {
-        internal DiscordRpcClient client;
-        internal bool isInitialized;
-
         /// <summary>
-        /// Initializes a new client connection to Discord.
+        /// Initializes the Discord client and sets up event handlers.
         /// </summary>
-        public DiscordRichPresence() {
-            InitializeClient();
-        }
+        internal static void InitializeDiscordClient() {
+            App.DiscordClient = new DiscordRpcClient(Constants.DiscordToken);
 
-        /// <summary>
-        /// Initializes the Discord RPC client and sets up event handlers.
-        /// </summary>
-        internal void InitializeClient() {
-            this.client = new(Constants.DiscordToken);
-
-            this.client.OnReady += (sender, e) => {
+            App.DiscordClient.OnReady += (sender, e) => {
                 Debug.WriteLine("Discord client is ready");
-                this.isInitialized = true;
+                App.DiscordClientIsInitialized = true;
             };
 
-            this.client.OnConnectionFailed += (sender, e) => {
+            App.DiscordClient.OnConnectionFailed += (sender, e) => {
                 Debug.WriteLine("Discord connection failed");
-                this.isInitialized = false;
+                App.DiscordClientIsInitialized = false;
             };
 
-            this.client.OnError += (sender, e) => {
+            App.DiscordClient.OnError += (sender, e) => {
                 Debug.WriteLine($"Discord error: {e.Message}");
-                this.isInitialized = false;
+                App.DiscordClientIsInitialized = false;
             };
 
-            this.client.OnClose += (sender, e) => {
+            App.DiscordClient.OnClose += (sender, e) => {
                 Debug.WriteLine("Discord connection closed");
-                this.isInitialized = false;
+                App.DiscordClientIsInitialized = false;
             };
 
-            this.client.Initialize();
+            App.DiscordClient.Initialize();
         }
 
         /// <summary>
@@ -56,7 +46,7 @@ namespace AppleMusic_Discord_Status {
         /// <param name="songEnd">Time left in the song.</param>
         /// <param name="songUrl">Apple Music song URL.</param>
         /// <param name="isPlaying">Whether or not the song is playing/paused.</param>
-        public void UpdatePresence(
+        internal static void UpdatePresence(
             string details,
             string state,
             string albumArtwork,
@@ -64,14 +54,14 @@ namespace AppleMusic_Discord_Status {
             string songUrl,
             bool isPlaying
         ) {
-            if (!this.isInitialized) {
-                this.InitializeClient();
+            if (!App.DiscordClientIsInitialized) {
+                InitializeDiscordClient();
             }
 
-            if (this.isInitialized) {
+            if (App.DiscordClientIsInitialized) {
                 RichPresence presence = new() {
                     Details = details.PadRight(2, '\0'),
-                    State = state,
+                    State = state[..Math.Min(state.Length, 256)],
                     Timestamps = isPlaying ? Timestamps.FromTimeSpan(ParseTimeRemaining(songEnd)) : null,
                     Assets = new Assets() {
                         LargeImageKey = albumArtwork ?? Constants.DiscordDefaultArtwork,
@@ -86,7 +76,7 @@ namespace AppleMusic_Discord_Status {
                     ]
                 };
 
-                this.client.SetPresence(presence);
+                App.DiscordClient.SetPresence(presence);
             } else {
                 Debug.WriteLine("Discord client is not initialized.");
             }
@@ -95,9 +85,9 @@ namespace AppleMusic_Discord_Status {
         /// <summary>
         /// Disposes of the Discord RPC client and resets the initialization state.
         /// </summary>
-        public void Dispose() {
-            this.isInitialized = false;
-            this.client?.Dispose();
+        internal static void Dispose() {
+            App.DiscordClientIsInitialized = false;
+            App.DiscordClient?.Dispose();
         }
 
         /// <summary>

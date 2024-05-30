@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 namespace AppleMusic_Discord_Status.Test {
     [TestClass]
     public class ITunesAPITests {
+
         [TestMethod]
         public async Task GetAlbumArtworkUrl_ReturnsValidUrl() {
             string albumName = "Spilling over Every Side";
