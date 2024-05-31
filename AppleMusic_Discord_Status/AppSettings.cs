@@ -16,9 +16,9 @@ namespace AppleMusic_Discord_Status {
         /// Settings object for use with JSON serialization/deserialization.
         /// </summary>
         internal class SettingsObject {
-            internal bool DisplayMusicStatus { get; set; }
-            internal bool ShowStatusOnPause { get; set; }
-            internal bool LaunchAtStartup { get; set; }
+            public bool DisplayMusicStatus { get; set; }
+            public bool ShowStatusOnPause { get; set; }
+            public bool LaunchAtStartup { get; set; }
         }
 
         /// <summary>
