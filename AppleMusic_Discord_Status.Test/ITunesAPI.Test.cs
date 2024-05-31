@@ -12,8 +12,8 @@ namespace AppleMusic_Discord_Status.Test {
             string artistName = "Pretty Lights";
             string artworkUrl = await ITunesAPI.GetAlbumArtworkUrl(albumName, artistName);
 
-            Assert.IsNotNull(artworkUrl, "Artwork URL should not be null.");
-            Assert.IsTrue(artworkUrl.Contains("1000x1000bb"), "Artwork URL should be for 1000x1000 image.");
+            Assert.IsNotNull(artworkUrl);
+            Assert.IsTrue(artworkUrl.Contains("1000x1000bb"));
         }
 
         [TestMethod]
@@ -22,7 +22,7 @@ namespace AppleMusic_Discord_Status.Test {
             string artistName = "Pretty Lights";
             string artworkUrl = await ITunesAPI.GetAlbumArtworkUrl(albumName, artistName);
 
-            Assert.IsNull(artworkUrl, "Artwork URL should be null.");
+            Assert.IsNull(artworkUrl);
         }
 
         [TestMethod]
@@ -31,7 +31,7 @@ namespace AppleMusic_Discord_Status.Test {
             string artistName = "";
             string artworkUrl = await ITunesAPI.GetAlbumArtworkUrl(albumName, artistName);
 
-            Assert.IsNull(artworkUrl, "Artwork URL should be null.");
+            Assert.IsNull(artworkUrl);
         }
 
         [TestMethod]
@@ -40,7 +40,7 @@ namespace AppleMusic_Discord_Status.Test {
             string artistName = new('x', 128);
             string artworkUrl = await ITunesAPI.GetSongLink(albumName, artistName);
 
-            Assert.IsNull(artworkUrl, "Artwork URL should be null.");
+            Assert.IsNull(artworkUrl);
         }
 
         [TestMethod]
@@ -49,7 +49,7 @@ namespace AppleMusic_Discord_Status.Test {
             string artistName = "Pretty Lights";
             string songUrl = await ITunesAPI.GetSongLink(songName, artistName);
 
-            Assert.IsNotNull(songUrl, "Song URL should not be null.");
+            Assert.IsNotNull(songUrl);
         }
 
         [TestMethod]
@@ -58,7 +58,7 @@ namespace AppleMusic_Discord_Status.Test {
             string artistName = "Pretty Lights";
             string songUrl = await ITunesAPI.GetSongLink(songName, artistName);
 
-            Assert.IsNull(songUrl, "Song URL should be null.");
+            Assert.IsNull(songUrl);
         }
 
         [TestMethod]
@@ -67,7 +67,7 @@ namespace AppleMusic_Discord_Status.Test {
             string artistName = "";
             string songUrl = await ITunesAPI.GetSongLink(songName, artistName);
 
-            Assert.IsNull(songUrl, "Song URL should be null.");
+            Assert.IsNull(songUrl);
         }
 
         [TestMethod]
@@ -76,7 +76,7 @@ namespace AppleMusic_Discord_Status.Test {
             string artistName = new('x', 128);
             string songUrl = await ITunesAPI.GetSongLink(songName, artistName);
 
-            Assert.IsNull(songUrl, "Song URL should be null.");
+            Assert.IsNull(songUrl);
         }
     }
 }
