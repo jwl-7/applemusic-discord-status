@@ -65,6 +65,7 @@ namespace AppleMusic_Discord_Status {
                 else RemoveStartupShortcut();
             }
         }
+
         /// <summary>
         /// Creates AppleMusic_Discord_Status/settings.json in AppData folder.
         /// </summary>
