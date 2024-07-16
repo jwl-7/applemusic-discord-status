@@ -22,22 +22,24 @@ namespace AppleMusic_Discord_Status {
             string url = $"{Constants.ITunesApiUrl}{Uri.EscapeDataString(query)}&entity=album";
 
             HttpResponseMessage response = await client.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-            string responseBody = await response.Content.ReadAsStringAsync();
-            JObject json = JObject.Parse(responseBody);
 
-            if (json["resultCount"].ToObject<int>() > 0) {
-                foreach (JToken result in json["results"]) {
-                    string collectionName = result["collectionName"].ToString().ToLower();
-                    string artist = result["artistName"].ToString().ToLower();
+            if (response.IsSuccessStatusCode) {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                JObject json = JObject.Parse(responseBody);
 
-                    if (
-                        collectionName.Equals(albumName, StringComparison.CurrentCultureIgnoreCase) && 
-                        artist.Equals(artistName, StringComparison.CurrentCultureIgnoreCase)
-                    ) {
-                        string artworkUrl = result["artworkUrl100"].ToString();
-                        artworkUrl = artworkUrl.Replace("100x100bb", "1000x1000bb");
-                        return artworkUrl;
+                if (json["resultCount"].ToObject<int>() > 0) {
+                    foreach (JToken result in json["results"]) {
+                        string collectionName = result["collectionName"].ToString().ToLower();
+                        string artist = result["artistName"].ToString().ToLower();
+
+                        if (
+                            collectionName.Equals(albumName, StringComparison.CurrentCultureIgnoreCase) &&
+                            artist.Equals(artistName, StringComparison.CurrentCultureIgnoreCase)
+                        ) {
+                            string artworkUrl = result["artworkUrl100"].ToString();
+                            artworkUrl = artworkUrl.Replace("100x100bb", "1000x1000bb");
+                            return artworkUrl;
+                        }
                     }
                 }
             }
@@ -56,14 +58,16 @@ namespace AppleMusic_Discord_Status {
             string url = $"{Constants.ITunesApiUrl}{Uri.EscapeDataString(query)}&entity=song";
 
             HttpResponseMessage response = await client.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-            string responseBody = await response.Content.ReadAsStringAsync();
-            JObject json = JObject.Parse(responseBody);
 
-            if (json["resultCount"].ToObject<int>() > 0) {
-                JToken result = json["results"][0];
-                string songLink = result["trackViewUrl"].ToString();
-                return songLink;
+            if (response.IsSuccessStatusCode) {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                JObject json = JObject.Parse(responseBody);
+
+                if (json["resultCount"].ToObject<int>() > 0) {
+                    JToken result = json["results"][0];
+                    string songLink = result["trackViewUrl"].ToString();
+                    return songLink;
+                }
             }
 
             return null;
