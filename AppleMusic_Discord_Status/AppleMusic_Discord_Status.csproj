@@ -51,6 +51,9 @@
 	  <Content Update="Assets\Apple_Music_icon.svg">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
+	  <Content Update="Assets\Apple_Music_icon_filled.svg">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
 	  <Content Update="Assets\Apple_Music_icon_gray.svg">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
