@@ -68,12 +68,12 @@ namespace AppleMusic_Discord_Status {
                         SmallImageKey = isPlaying ? Constants.DiscordPlayingIcon : Constants.DiscordPausedIcon,
                         SmallImageText = Constants.DiscordSmallImageText
                     },
-                    Buttons = new Button[] {
+                    Buttons = [
                         new() {
                             Label = Constants.DiscordButtonLabel,
                             Url = songUrl ?? Constants.AppleMusicUrl
                         }
-                    }
+                    ]
                 };
 
                 App.DiscordClient.SetPresence(presence);
