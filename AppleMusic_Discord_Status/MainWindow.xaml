@@ -19,7 +19,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Title -->
+        <!-- Title Block -->
         <StackPanel 
             Grid.Row="0" 
             Orientation="Horizontal" 
@@ -38,6 +38,8 @@
                     <Setter Property="VerticalAlignment" Value="Center"/>
                 </Style>
             </StackPanel.Resources>
+            
+            <!-- Title Text Blocks -->
             <TextBlock Text="Apple Music"/>
             <Image Source="{StaticResource AppleMusicIconFilled}"/>
             <TextBlock Text="Discord Status"/>
