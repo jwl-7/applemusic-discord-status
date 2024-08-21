@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<ApplicationIcon>Assets\Apple_Music_icon.ico</ApplicationIcon>
-		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
 		<AppxBundle>Never</AppxBundle>
 		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
@@ -29,13 +27,15 @@
 		<Version>1.0.2</Version>
 		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 		<WindowsPackageType>None</WindowsPackageType>
+		<ApplicationIcon>Assets\Apple_Music_icon.ico</ApplicationIcon>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Manifest Include="$(ApplicationManifest)" />
 		<PackageReference Include="DiscordRichPresence" Version="1.2.1.24" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240428000" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240802000" />
 		<FrameworkReference Include="Microsoft.WindowsDesktop.App" />
 		<InternalsVisibleTo Include="AppleMusic_Discord_Status.Test" />
 	</ItemGroup>

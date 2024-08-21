@@ -11,7 +11,6 @@ namespace AppleMusic_Discord_Status {
         internal const int AppWindowHeight = 400;
         internal const int AppWindowWidth = 500;
         internal const int AppRefreshRate = 5000;
-        internal const string AppIcon = "Assets/Apple_Music_icon.ico";
         internal const string AppName = "AppleMusic_Discord_Status";
         internal const string AppSettingsName = "settings.json";
         internal const string AppShortcutName = "AppleMusic_Discord_Status.lnk";
@@ -29,6 +28,7 @@ namespace AppleMusic_Discord_Status {
         internal const string ITunesApiUrl = "https://itunes.apple.com/search?term=";
         internal const string WindowsScriptHostShellObjectGUID = "72C24DD5-D70A-438B-8A42-98424B88AFB8";
         internal static string AppExePath = Process.GetCurrentProcess().MainModule?.FileName;
+        internal static string AppIcon = Path.Join(AppDomain.CurrentDomain.BaseDirectory, "Assets/Apple_Music_icon.ico");
         internal static string WindowsAppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         internal static string WindowsStartupFolder = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
         internal static string AppDataSettingsFolder = Path.Join(WindowsAppDataFolder, AppName);
