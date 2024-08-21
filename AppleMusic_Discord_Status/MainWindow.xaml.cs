@@ -30,6 +30,7 @@ namespace AppleMusic_Discord_Status {
 
             this.AppWindow.Resize(new SizeInt32(Constants.AppWindowWidth, Constants.AppWindowHeight));
             this.AppWindow.SetIcon(Constants.AppIcon);
+            this.Title = "Apple Music — Discord Status";
             this.ExtendsContentIntoTitleBar = true;
         }
 
