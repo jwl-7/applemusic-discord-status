@@ -64,7 +64,7 @@ namespace AppleMusic_Discord_Status {
                 RichPresence presence = new() {
                     Details = details.PadRight(2, '\0'),
                     State = state[..Math.Min(state.Length, 256)],
-                    Timestamps = GetTimestamps(songStart, songEnd),
+                    Timestamps = isPlaying ? GetTimestamps(songStart, songEnd) : null,
                     Assets = new Assets() {
                         LargeImageKey = albumArtwork ?? Constants.DiscordDefaultArtwork,
                         SmallImageKey = isPlaying ? Constants.DiscordPlayingIcon : Constants.DiscordPausedIcon,
