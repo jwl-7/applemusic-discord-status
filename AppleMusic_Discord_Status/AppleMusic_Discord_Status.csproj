@@ -24,7 +24,7 @@
 		<TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 		<UseWinUI>true</UseWinUI>
-		<Version>1.0.2</Version>
+		<Version>1.0.3</Version>
 		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 		<WindowsPackageType>None</WindowsPackageType>
 		<ApplicationIcon>Assets\Apple_Music_icon.ico</ApplicationIcon>
