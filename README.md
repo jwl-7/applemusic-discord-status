@@ -18,7 +18,7 @@
 
 ## How it Works
 - Apple Music is scraped using [UI Automation](https://learn.microsoft.com/en-us/windows/win32/winauto/entry-uiauto-win32)
-- Song info is scraped from the Mini Player, because the main Player is sent to some other dimension once any context menu is opened in Apple Music
+- Song info is scraped from the Desktop Player
 - Album artwork and song link are obtained via iTunes API
 
 ## Built With
