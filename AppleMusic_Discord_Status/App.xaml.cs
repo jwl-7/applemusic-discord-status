@@ -17,7 +17,7 @@ namespace AppleMusic_Discord_Status {
         internal static bool DiscordClientIsInitialized;
         internal static bool DiscordIsOpen;
         internal static bool AppleMusicIsOpen;
-        internal static bool MiniPlayerIsOpen;
+        internal static bool PlayerIsOpen;
 
         /// <summary>
         /// Initializes application and AppManager instance.

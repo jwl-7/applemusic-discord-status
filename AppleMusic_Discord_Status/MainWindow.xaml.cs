@@ -57,7 +57,7 @@ namespace AppleMusic_Discord_Status {
         /// Updates application status icons.
         /// </summary>
         public void UpdateStatusIcons() {
-            AppManager.UpdateStatusIcons(this.DiscordStatusIcon, this.AppleMusicStatusIcon, this.MiniPlayerStatusIcon);
+            AppManager.UpdateStatusIcons(this.DiscordStatusIcon, this.AppleMusicStatusIcon);
         }
     }
 }

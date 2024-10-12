@@ -43,6 +43,7 @@ namespace AppleMusic_Discord_Status {
         /// <param name="details">The details with song name.</param>
         /// <param name="state">The state with artist/album.</param>
         /// <param name="albumArtwork">Apple Music song album artwork URL.</param>
+        /// <param name="songStart">Time elapsed in the song.</param>
         /// <param name="songEnd">Time left in the song.</param>
         /// <param name="songUrl">Apple Music song URL.</param>
         /// <param name="isPlaying">Whether or not the song is playing/paused.</param>
@@ -50,7 +51,8 @@ namespace AppleMusic_Discord_Status {
             string details,
             string state,
             string albumArtwork,
-            string songEnd,
+            int? songStart,
+            int? songEnd,
             string songUrl,
             bool isPlaying
         ) {
@@ -62,12 +64,13 @@ namespace AppleMusic_Discord_Status {
                 RichPresence presence = new() {
                     Details = details.PadRight(2, '\0'),
                     State = state[..Math.Min(state.Length, 256)],
-                    Timestamps = isPlaying ? Timestamps.FromTimeSpan(ParseTimeRemaining(songEnd)) : null,
+                    Timestamps = GetTimestamps(songStart, songEnd),
                     Assets = new Assets() {
                         LargeImageKey = albumArtwork ?? Constants.DiscordDefaultArtwork,
                         SmallImageKey = isPlaying ? Constants.DiscordPlayingIcon : Constants.DiscordPausedIcon,
                         SmallImageText = Constants.DiscordSmallImageText
                     },
+                    Type = ActivityType.Listening,
                     Buttons = [
                         new() {
                             Label = Constants.DiscordButtonLabel,
@@ -91,11 +94,26 @@ namespace AppleMusic_Discord_Status {
         }
 
         /// <summary>
-        /// Parses time string representing time left in the song into seconds.
+        /// Gets the timestamps for displaying the song time progress.
         /// </summary>
-        /// <param name="timeString">Time string representing the remaining time of the song.</param>
-        /// <returns>The total remaining seconds parsed from the time string.</returns>
-        public static int ParseTimeRemaining(string timeString) {
+        /// <param name="songStart">Start time (time elapsed) of the song.</param>
+        /// <param name="songEnd">End time (time left) of the song.</param>
+        /// <returns></returns>
+        public static Timestamps GetTimestamps(int? songStart, int? songEnd) {
+            if (songStart == null || songEnd == null) return null;
+
+            return new Timestamps() {
+                Start = DateTime.UtcNow - new TimeSpan(0, 0, (int)songStart),
+                End = DateTime.UtcNow + new TimeSpan(0, 0, (int)songEnd)
+            };
+        }
+
+        /// <summary>
+        /// Parses time string scraped from Apple Music into seconds.
+        /// </summary>
+        /// <param name="timeString">Time string in (-)H:MM:SS format.</param>
+        /// <returns>Time in seconds.</returns>
+        public static int ParseTimeString(string timeString) {
             if (string.IsNullOrWhiteSpace(timeString)) {
                 return 0;
             }
@@ -112,7 +130,6 @@ namespace AppleMusic_Discord_Status {
                         throw new FormatException();
                     }
                 } else if (timeParts.Length == 2) {
-                    // Format: M:SS or :SS
                     if (timeParts[0] == string.Empty) {
                         // Format: :SS
                         if (!int.TryParse(timeParts[1], out seconds) || seconds < 0 || seconds > 59) {

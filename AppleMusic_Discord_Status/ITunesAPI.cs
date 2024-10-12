@@ -48,8 +48,35 @@ namespace AppleMusic_Discord_Status {
         }
 
         /// <summary>
-        /// Fetches the URL for a song based on the song name and artist name.
+        /// Fetches the duration (total time) of the song.
         /// </summary>
+        /// <param name="songName">Name of the song.</param>
+        /// <param name="artistName">Name of the artist.</param>
+        /// <returns>The duration of the song if found; otherwise, null.</returns>
+        public static async Task<int?> GetSongDuration(string songName, string artistName) {
+            string query = $"{songName} {artistName}";
+            string url = $"{Constants.ITunesApiUrl}{Uri.EscapeDataString(query)}&entity=song";
+
+            HttpResponseMessage response = await client.GetAsync(url);
+
+            if (response.IsSuccessStatusCode) {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                JObject json = JObject.Parse(responseBody);
+
+                if (json["resultCount"].ToObject<int>() > 0) {
+                    JToken result = json["results"][0];
+                    int durationInMillis = (int)result["trackTimeMillis"];
+                    int durationInSeconds = durationInMillis / 1000;
+                    return durationInSeconds;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Fetches the URL for a song based on the song name and artist name.
+        /// </summary >
         /// <param name="songName">Name of the song.</param>
         /// <param name="artistName">Name of the artist.</param>
         /// <returns>The URL of the song if found; otherwise, null.</returns>

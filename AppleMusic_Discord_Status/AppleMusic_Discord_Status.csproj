@@ -33,9 +33,9 @@
 
 	<ItemGroup>
 		<Manifest Include="$(ApplicationManifest)" />
-		<PackageReference Include="DiscordRichPresence" Version="1.2.1.24" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240802000" />
+		<PackageReference Include="DiscordRichPresence" Version="1.3.0.28" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240923002" />
 		<FrameworkReference Include="Microsoft.WindowsDesktop.App" />
 		<InternalsVisibleTo Include="AppleMusic_Discord_Status.Test" />
 	</ItemGroup>

@@ -85,18 +85,6 @@
                 <TextBlock Grid.Column="1" Text="Apple Music"/>
                 <FontIcon Grid.Column="2" x:Name="AppleMusicStatusIcon"/>
             </Grid>
-
-            <!-- Mini Player Status -->
-            <Grid Margin="4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Image Grid.Column="0" Source="{StaticResource AppleMusicIconGray}" Width="24" Height="24"/>
-                <TextBlock Grid.Column="1" Text="Mini Player"/>
-                <FontIcon Grid.Column="2" x:Name="MiniPlayerStatusIcon"/>
-            </Grid>
         </StackPanel>
 
 

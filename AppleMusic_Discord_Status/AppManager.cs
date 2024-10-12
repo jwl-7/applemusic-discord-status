@@ -31,31 +31,31 @@ namespace AppleMusic_Discord_Status {
 
         /// <summary>
         /// Refreshes application status and Discord status.
-        /// Sends Rich Presence to Discord if Discord, Apple Music, and Apple Music Mini Player are all detected.
+        /// Sends Rich Presence to Discord if both Discord and Apple Music are detected.
         /// </summary>
         internal static void RefreshStatus() {
             App.DiscordIsOpen = Process.GetProcessesByName(Constants.DiscordAppName).Length > 0;
             App.AppleMusicIsOpen = Process.GetProcessesByName(Constants.AppleMusicAppName).Length > 0;
 
-            RefreshMiniPlayerStatus();
+            RefreshPlayerStatus();
             RefreshStatusIcons();
             RefreshDiscordRichPresence();
         }
 
         /// <summary>
-        /// Refreshes status of Apple Music Mini Player.
+        /// Refreshes status of Apple Music Player.
         /// </summary>
-        internal static void RefreshMiniPlayerStatus() {
+        internal static void RefreshPlayerStatus() {
             try {
                 if (!App.AppleMusicIsOpen) {
-                    App.MiniPlayerIsOpen = false;
+                    App.PlayerIsOpen = false;
                 } else {
-                    nint miniPlayerHandle = AppleMusicScraper.GetMiniPlayerWindowHandle();
-                    AutomationElement miniPlayerWindow = AppleMusicScraper.GetMiniPlayerWindow(miniPlayerHandle);
-                    App.MiniPlayerIsOpen = miniPlayerWindow != null;
+                    nint playerHandle = AppleMusicScraper.GetPlayerWindowHandle();
+                    AutomationElement playerWindow = AppleMusicScraper.GetPlayerWindow(playerHandle);
+                    App.PlayerIsOpen = playerWindow != null;
                 }
             } catch (Exception exception) {
-                Debug.WriteLine($"Exception in RefreshMiniPlayerStatus: {exception}");
+                Debug.WriteLine($"Exception in RefreshPlayerStatus: {exception}");
             }
         }
 
@@ -66,10 +66,16 @@ namespace AppleMusic_Discord_Status {
             if (
                 App.DiscordIsOpen &&
                 App.AppleMusicIsOpen &&
-                App.MiniPlayerIsOpen &&
                 AppSettings.DisplayMusicStatusToggle
             ) {
-                (string songName, string songArtist, string songAlbum, string timeLeft, bool isPlaying) = AppleMusicScraper.Scrape();
+                (
+                    string songName, 
+                    string songArtist, 
+                    string songAlbum, 
+                    int? songStart,
+                    int? songEnd,
+                    bool isPlaying
+                ) = await AppleMusicScraper.Scrape();
 
                 if (!isPlaying && !AppSettings.ShowStatusOnPauseToggle) {
                     DiscordRichPresence.Dispose();
@@ -86,7 +92,8 @@ namespace AppleMusic_Discord_Status {
                     details: App.CurrentSong ?? "",
                     state: $"by {songArtist} — {songAlbum}",
                     albumArtwork: App.CurrentAlbumArtwork,
-                    songEnd: timeLeft,
+                    songStart: songStart,
+                    songEnd: songEnd,
                     songUrl: App.CurrentSongUrl,
                     isPlaying: isPlaying
                 );
@@ -94,7 +101,7 @@ namespace AppleMusic_Discord_Status {
         }
 
         /// <summary>
-        /// Refreshes the status icons for Discord, Apple Music, and Apple Music Mini Player.
+        /// Refreshes the status icons for Discord and Apple Music.
         /// </summary>
         internal static void RefreshStatusIcons() {
             MainWindow window = (App.Current as App)?.MainWindow as MainWindow;
@@ -105,21 +112,18 @@ namespace AppleMusic_Discord_Status {
         }
 
         /// <summary>
-        /// Updates the status icons for Discord, Apple Music, and Apple Music Mini Player.
+        /// Updates the status icons for Discord and Apple Music.
         /// Red X = Not Detected
         /// Green Checkmark = Detected
         /// </summary>
         /// <param name="DiscordStatusIcon">Discord status FontIcon.</param>
         /// <param name="AppleMusicStatusIcon">Apple Music status FontIcon.</param>
-        /// <param name="MiniPlayerStatusIcon">Apple Music Mini Player status FontIcon.</param>
         internal static void UpdateStatusIcons(
             FontIcon DiscordStatusIcon,
-            FontIcon AppleMusicStatusIcon,
-            FontIcon MiniPlayerStatusIcon
+            FontIcon AppleMusicStatusIcon
         ) {
             UpdateStatusIcon(DiscordStatusIcon, App.DiscordIsOpen);
             UpdateStatusIcon(AppleMusicStatusIcon, App.AppleMusicIsOpen);
-            UpdateStatusIcon(MiniPlayerStatusIcon, App.MiniPlayerIsOpen);
         }
 
         /// <summary>
