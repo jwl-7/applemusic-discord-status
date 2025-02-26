@@ -62,7 +62,6 @@ namespace AppleMusic_Discord_Status {
             }
 
             if (App.DiscordClientIsInitialized) {
-                Debug.WriteLine(state);
                 RichPresence presence = new() {
                     Details = details.PadRight(2, '\0'),
                     State = Truncate(state),
