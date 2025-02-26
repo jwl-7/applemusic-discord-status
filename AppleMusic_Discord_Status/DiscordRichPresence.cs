@@ -1,6 +1,7 @@
 ﻿using DiscordRPC;
 using System;
 using System.Diagnostics;
+using System.Text;
 
 
 namespace AppleMusic_Discord_Status {
@@ -61,9 +62,10 @@ namespace AppleMusic_Discord_Status {
             }
 
             if (App.DiscordClientIsInitialized) {
+                Debug.WriteLine(state);
                 RichPresence presence = new() {
                     Details = details.PadRight(2, '\0'),
-                    State = state[..Math.Min(state.Length, 256)],
+                    State = Truncate(state),
                     Timestamps = isPlaying ? GetTimestamps(songStart, songEnd) : null,
                     Assets = new Assets() {
                         LargeImageKey = albumArtwork ?? Constants.DiscordDefaultArtwork,
@@ -162,5 +164,25 @@ namespace AppleMusic_Discord_Status {
             return totalSeconds;
         }
 
+        /// <summary>
+        /// Truncates string to 128 bytes.
+        /// </summary>
+        /// <param name="input">Input string.</param>
+        /// <returns>Truncated string.</returns>
+        public static string Truncate(string input) {
+            Encoding utf8 = Encoding.UTF8;
+            byte[] inputBytes = utf8.GetBytes(input);
+            string ellipsis = "…";
+            int maxBytes = 128;
+            int ellipsisBytes = utf8.GetByteCount(ellipsis);
+            int length = 0;
+
+            if (inputBytes.Length <= maxBytes)
+                return input;
+
+            while (utf8.GetByteCount(input[..++length]) <= (maxBytes - ellipsisBytes)) ;
+
+            return input[..(length - 1)] + ellipsis;
+        }
     }
 }
