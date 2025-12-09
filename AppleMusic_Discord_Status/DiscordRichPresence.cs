@@ -164,24 +164,18 @@ namespace AppleMusic_Discord_Status {
         }
 
         /// <summary>
-        /// Truncates string to 128 bytes.
+        /// Truncates string to DiscordRPC limit.
         /// </summary>
         /// <param name="input">Input string.</param>
         /// <returns>Truncated string.</returns>
         public static string Truncate(string input) {
-            Encoding utf8 = Encoding.UTF8;
-            byte[] inputBytes = utf8.GetBytes(input);
-            string ellipsis = "…";
-            int maxBytes = 128;
-            int ellipsisBytes = utf8.GetByteCount(ellipsis);
-            int length = 0;
-
-            if (inputBytes.Length <= maxBytes)
+            if (string.IsNullOrWhiteSpace(input) || input.Length <= Constants.DiscordMaxStringLength) {
                 return input;
+            }
 
-            while (utf8.GetByteCount(input[..++length]) <= (maxBytes - ellipsisBytes)) ;
+            char ellipsis = '…';
 
-            return input[..(length - 1)] + ellipsis;
+            return input.Substring(0, Constants.DiscordMaxStringLength - 1) + ellipsis;
         }
     }
 }
