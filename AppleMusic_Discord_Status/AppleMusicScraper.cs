@@ -201,8 +201,9 @@ namespace AppleMusic_Discord_Status {
             AutomationElement firstChild = scrollViewerChildren[0];
             AutomationElement secondChild = scrollViewerChildren[1];
 
-            string songName = firstChild.Current.Name;
-            string[] songInfo = secondChild.Current.Name.Split(['—'], 2);
+            string songName = SanitizeData(firstChild.Current.Name);
+            string rawSongInfo = SanitizeData(secondChild.Current.Name);
+            string[] songInfo = rawSongInfo.Split(['—'], 2);
             string songArtist = songInfo[0].Trim();
             string songAlbum = songInfo[1].Trim();
 
@@ -315,6 +316,20 @@ namespace AppleMusic_Discord_Status {
             int totalSeconds = hours * 3600 + minutes * 60 + seconds;
             Debug.WriteLine("Parsed time in seconds: " + totalSeconds);
             return totalSeconds;
+        }
+
+        /// <summary>
+        /// Sanitizes data scraped from Apple Music.
+        /// Failsafe for bug in Apple Music where data is accumulated while song is playing.
+        /// </summary>
+        /// <param name="input">Input string.</param>
+        /// <returns>Sanitized string.</returns>
+        public static string SanitizeData(string input) {
+            if (string.IsNullOrWhiteSpace(input) || input.Length <= Constants.ScraperMaxStringLength) {
+                return input;
+            }
+
+            return input.Substring(0, Constants.ScraperMaxStringLength);
         }
     }
 }

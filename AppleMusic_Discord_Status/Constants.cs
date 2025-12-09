@@ -11,7 +11,9 @@ namespace AppleMusic_Discord_Status {
         internal const int AppWindowHeight = 400;
         internal const int AppWindowWidth = 500;
         internal const int AppRefreshRate = 5000;
-        internal const int DiscordMaxStringLength = 128;
+        internal const int ScraperMaxStringLength = 4096;
+        internal const int DiscordMaxStringLength = 128 - 7;
+        internal const char Ellipsis = '…';
         internal const string AppName = "AppleMusic_Discord_Status";
         internal const string AppSettingsName = "settings.json";
         internal const string AppShortcutName = "AppleMusic_Discord_Status.lnk";

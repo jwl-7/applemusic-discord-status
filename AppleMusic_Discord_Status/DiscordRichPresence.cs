@@ -63,8 +63,8 @@ namespace AppleMusic_Discord_Status {
 
             if (App.DiscordClientIsInitialized) {
                 RichPresence presence = new() {
-                    Details = details.PadRight(2, '\0'),
-                    State = Truncate(state),
+                    Details = SanitizeForDiscord(details.PadRight(2, '\0')),
+                    State = SanitizeForDiscord(state),
                     Timestamps = isPlaying ? GetTimestamps(songStart, songEnd) : null,
                     Assets = new Assets() {
                         LargeImageKey = albumArtwork ?? Constants.DiscordDefaultArtwork,
@@ -164,18 +164,16 @@ namespace AppleMusic_Discord_Status {
         }
 
         /// <summary>
-        /// Truncates string to DiscordRPC limit.
+        /// Sanitizes string for DiscordRPC.
         /// </summary>
         /// <param name="input">Input string.</param>
-        /// <returns>Truncated string.</returns>
-        public static string Truncate(string input) {
+        /// <returns>Formatted string.</returns>
+        public static string SanitizeForDiscord(string input) {
             if (string.IsNullOrWhiteSpace(input) || input.Length <= Constants.DiscordMaxStringLength) {
                 return input;
             }
 
-            char ellipsis = '…';
-
-            return input.Substring(0, Constants.DiscordMaxStringLength - 1) + ellipsis;
+            return input.Substring(0, Constants.DiscordMaxStringLength) + Constants.Ellipsis;
         }
     }
 }
