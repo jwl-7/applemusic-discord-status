@@ -1,6 +1,7 @@
 ﻿using DiscordRPC;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 
 
@@ -63,11 +64,11 @@ namespace AppleMusic_Discord_Status {
 
             if (App.DiscordClientIsInitialized) {
                 RichPresence presence = new() {
-                    Details = SanitizeForDiscord(details.PadRight(2, '\0')),
-                    State = SanitizeForDiscord(state),
+                    Details = SanitizeText(details),
+                    State = SanitizeText(state),
                     Timestamps = isPlaying ? GetTimestamps(songStart, songEnd) : null,
                     Assets = new Assets() {
-                        LargeImageKey = albumArtwork ?? Constants.DiscordDefaultArtwork,
+                        LargeImageKey = SanitizeImageKey(albumArtwork, Constants.DiscordDefaultArtwork),
                         SmallImageKey = isPlaying ? Constants.DiscordPlayingIcon : Constants.DiscordPausedIcon,
                         SmallImageText = Constants.DiscordSmallImageText
                     },
@@ -164,16 +165,54 @@ namespace AppleMusic_Discord_Status {
         }
 
         /// <summary>
-        /// Sanitizes string for DiscordRPC.
+        /// Sanitizes text string for DiscordRPC.
+        /// Max text = 128 bytes
         /// </summary>
         /// <param name="input">Input string.</param>
         /// <returns>Formatted string.</returns>
-        public static string SanitizeForDiscord(string input) {
-            if (string.IsNullOrWhiteSpace(input) || input.Length <= Constants.DiscordMaxStringLength) {
+        public static string SanitizeText(string input) {
+            if (string.IsNullOrWhiteSpace(input)) {
+                return "  ";
+            }
+
+            if (input.Length < 2) {
+                return input.PadRight(2, ' ');
+            }
+
+            int currBytes = Encoding.UTF8.GetByteCount(input);
+
+            if (currBytes <= Constants.DiscordMaxTextBytes) {
                 return input;
             }
 
-            return input.Substring(0, Constants.DiscordMaxStringLength) + Constants.Ellipsis;
+            int ellipsisBytes = Encoding.UTF8.GetByteCount(Constants.Ellipsis);
+            int targetBytes = Constants.DiscordMaxTextBytes - ellipsisBytes;
+            string output = input;
+
+            while (currBytes > targetBytes && output.Length > 0) {
+                output = output.Substring(0, output.Length - 1);
+                currBytes = Encoding.UTF8.GetByteCount(output);
+            }
+
+            return output + Constants.Ellipsis;
+        }
+
+        /// <summary>
+        /// Sanitizes image string for DiscordRPC.
+        /// Max image = 32 bytes
+        /// </summary>
+        /// <param name="input">Input string.</param>
+        /// <returns>Formatted string.</returns>
+        public static string SanitizeImageKey(string input, string defaultImage) {
+            if (string.IsNullOrWhiteSpace(input)) {
+                return defaultImage;
+            }
+
+            if (Encoding.UTF8.GetByteCount(input) > Constants.DiscordMaxKeyBytes) {
+                return defaultImage;
+            }
+
+            return input;
         }
     }
 }
