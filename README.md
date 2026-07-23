@@ -24,6 +24,3 @@
 ## Built With
 - [WinUI3](https://github.com/microsoft/microsoft-ui-xaml)
 - [Discord Rich Presence](https://github.com/Lachee/discord-rpc-csharp)
-
-## License
-This project is released under the GNU GPL License - see the [LICENSE](LICENSE) file for details
