@@ -14,7 +14,7 @@ namespace AppleMusic_Discord_Status {
         internal const int ScraperMaxStringLength = 4096;
 
         internal const int DiscordMaxTextBytes = 128;
-        internal const int DiscordMaxKeyBytes = 32;
+        internal const int DiscordMaxKeyLength = 256;
 
         internal const string Ellipsis = "…";
         internal const string AppName = "AppleMusic_Discord_Status";

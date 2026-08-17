@@ -208,7 +208,7 @@ namespace AppleMusic_Discord_Status {
                 return defaultImage;
             }
 
-            if (Encoding.UTF8.GetByteCount(input) > Constants.DiscordMaxKeyBytes) {
+            if (input.Length > Constants.DiscordMaxKeyLength) {
                 return defaultImage;
             }
 
