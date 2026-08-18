@@ -1,5 +1,5 @@
 ﻿namespace AppleMusic_Discord_Status {
-    public class TrackData {
+    internal class TrackData {
         internal string Song { get; set; }
         internal string Artist { get; set; }
         internal string Album { get; set; }
