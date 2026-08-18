@@ -3,9 +3,8 @@
 		<ApplicationIcon>..\AppleMusic_Discord_Status\Assets\Apple_Music_icon.ico</ApplicationIcon>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<DefaultLanguage>en-us</DefaultLanguage>
-		<EnableMsixTooling>true</EnableMsixTooling>
-		<EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
-		<OutputType>WinExe</OutputType>
+
+	
 		<PlatformTarget>x64</PlatformTarget>
 		<Platforms>x64</Platforms>
 		<PublishProfile>win-$(Platform).pubxml</PublishProfile>
@@ -15,7 +14,7 @@
 		<SupportedOSPlatformVersion>10.0.22621.0</SupportedOSPlatformVersion>
 		<TargetFramework>net10.0-windows10.0.22621.0</TargetFramework>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-		<UseWinUI>true</UseWinUI>
+	
 	</PropertyGroup>
 
 	<ItemGroup>
