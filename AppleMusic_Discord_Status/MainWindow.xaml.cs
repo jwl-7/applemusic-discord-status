@@ -57,7 +57,7 @@ namespace AppleMusic_Discord_Status {
         /// <summary>
         /// Initializes application window with customizations.
         /// </summary>
-        public void InitializeWindow() {
+        internal void InitializeWindow() {
             OverlappedPresenter appWindowPresenter = this.AppWindow.Presenter as OverlappedPresenter;
 
             appWindowPresenter.IsResizable = false;
@@ -65,7 +65,7 @@ namespace AppleMusic_Discord_Status {
 
             this.AppWindow.Resize(new SizeInt32(Constants.AppWindowWidth, Constants.AppWindowHeight));
             this.AppWindow.SetIcon(Constants.AppIcon);
-            this.Title = "Apple Music — Discord Status";
+            this.Title = "Apple Music ï¿½ Discord Status";
             this.ExtendsContentIntoTitleBar = true;
         }
 
@@ -91,7 +91,7 @@ namespace AppleMusic_Discord_Status {
         /// <summary>
         /// Updates application status icons.
         /// </summary>
-        public void UpdateStatusIcons() {
+        internal void UpdateStatusIcons() {
             AppManager.UpdateStatusIcons(this.DiscordStatusIcon, this.AppleMusicStatusIcon);
         }
     }

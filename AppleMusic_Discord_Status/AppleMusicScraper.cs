@@ -110,7 +110,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="player">Player element.</param>
         /// <returns>Bridge element.</returns>
-        public static AutomationElement GetBridgeElement(AutomationElement player) {
+        private static AutomationElement GetBridgeElement(AutomationElement player) {
             return player.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.ClassNameProperty, "Microsoft.UI.Content.DesktopChildSiteBridge")
@@ -122,7 +122,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="bridge">Bridge element.</param>
         /// <returns>Input Site Window element.</returns>
-        public static AutomationElement GetInputSiteElement(AutomationElement bridge) {
+        private static AutomationElement GetInputSiteElement(AutomationElement bridge) {
             return bridge.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.ClassNameProperty, "InputSiteWindowClass")
@@ -134,7 +134,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="inputSite">Input Site element.</param>
         /// <returns>NavView element.</returns>
-        public static AutomationElement GetNavViewElement(AutomationElement bridge) {
+        private static AutomationElement GetNavViewElement(AutomationElement bridge) {
             return bridge.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.AutomationIdProperty, "NavView")
@@ -146,7 +146,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="navView">NavView element.</param>
         /// <returns>TransportBar element.</returns>
-        public static AutomationElement GetTransportBarElement(AutomationElement navView) {
+        private static AutomationElement GetTransportBarElement(AutomationElement navView) {
             return navView.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.AutomationIdProperty, "TransportBar")
@@ -158,7 +158,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="transportBar">TransportBar element.</param>
         /// <returns>LCD element.</returns>
-        public static AutomationElement GetLcdElement(AutomationElement transportBar) {
+        private static AutomationElement GetLcdElement(AutomationElement transportBar) {
             return transportBar.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.AutomationIdProperty, "LCD")
@@ -170,7 +170,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="lcd">LCD element.</param>
         /// <returns>ScrollViewer children elements.</returns>
-        public static AutomationElementCollection GetScrollViewerChildren(AutomationElement lcd) {
+        private static AutomationElementCollection GetScrollViewerChildren(AutomationElement lcd) {
             return lcd.FindAll(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.ClassNameProperty, "ScrollViewer")
@@ -182,7 +182,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="lcd">LCD element</param>
         /// <returns>A tuple with song name, song artist, and song album.</returns>
-        public static (string song, string artist, string album) GetSongInfo(AutomationElement lcd) {
+        private static (string song, string artist, string album) GetSongInfo(AutomationElement lcd) {
             AutomationElementCollection scrollViewerChildren = GetScrollViewerChildren(lcd);
             AutomationElement firstChild = scrollViewerChildren[0];
             AutomationElement secondChild = scrollViewerChildren[1];
@@ -201,7 +201,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="lcd">LCD element.</param>
         /// <returns>CurrentTime element.</returns>
-        public static string GetCurrentTime(AutomationElement lcd) {
+        private static string GetCurrentTime(AutomationElement lcd) {
             AutomationElement currentTimeElement = lcd.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.AutomationIdProperty, "CurrentTime")
@@ -214,7 +214,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="lcd">LCD element.</param>
         /// <returns>Duration element.</returns>
-        public static string GetDuration(AutomationElement lcd) {
+        private static string GetDuration(AutomationElement lcd) {
             AutomationElement durationElement = lcd.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.AutomationIdProperty, "Duration")
@@ -227,7 +227,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="lcd">LCD element.</param>
         /// <returns>Slider range values.</returns>
-        public static RangeValuePattern GetSlider(AutomationElement lcd) {
+        private static RangeValuePattern GetSlider(AutomationElement lcd) {
             AutomationElement sliderElement = lcd.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.AutomationIdProperty, "LCDScrubber")
@@ -240,7 +240,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="transportBar">TransportBar element.</param>
         /// <returns>Whether or not the song is playing/paused.</returns>
-        public static bool IsPlaying(AutomationElement transportBar) {
+        private static bool IsPlaying(AutomationElement transportBar) {
             AutomationElement playPauseElement = transportBar.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(
@@ -255,7 +255,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="timeString">Time string in (-)H:MM:SS format.</param>
         /// <returns>Time in seconds.</returns>
-        public static int ParseTimeString(string timeString) {
+        private static int ParseTimeString(string timeString) {
             if (string.IsNullOrWhiteSpace(timeString)) {
                 return 0;
             }
@@ -310,7 +310,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="input">Input string.</param>
         /// <returns>Sanitized string.</returns>
-        public static string SanitizeData(string input) {
+        private static string SanitizeData(string input) {
             if (string.IsNullOrWhiteSpace(input) || input.Length <= Constants.ScraperMaxStringLength) {
                 return input;
             }

@@ -22,7 +22,7 @@ namespace AppleMusic_Discord_Status {
         /// <summary>
         /// Display Music Status toggle setting.
         /// </summary>
-        public static bool DisplayMusicStatusToggle {
+        internal static bool DisplayMusicStatusToggle {
             get {
                 return GetSettingsObject().DisplayMusicStatus;
             }

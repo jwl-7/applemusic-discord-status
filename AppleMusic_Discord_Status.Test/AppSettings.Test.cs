@@ -19,7 +19,7 @@ namespace AppleMusic_Discord_Status.Test {
             Cleanup();
         }
 
-        private static void Cleanup() {
+        public static void Cleanup() {
             if (Directory.Exists(Constants.AppDataSettingsFolder)) {
                 Directory.Delete(Constants.AppDataSettingsFolder, true);
             }
