@@ -117,6 +117,7 @@ namespace AppleMusic_Discord_Status {
                 }
 
                 try {
+                    lnk.Arguments = "--startup";
                     lnk.TargetPath = Constants.AppExePath;
                     lnk.IconLocation = $"{Constants.AppExePath}, 0";
                     lnk.Save();
