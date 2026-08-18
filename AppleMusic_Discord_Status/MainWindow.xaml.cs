@@ -1,14 +1,16 @@
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-using System;
+using System.Diagnostics;
 using Windows.Graphics;
-
 
 namespace AppleMusic_Discord_Status {
     /// <summary>
     /// Main Window class.
     /// </summary>
     public sealed partial class MainWindow : Window {
+        private bool _isExiting = false;
+
         /// <summary>
         /// Initializes main UI window.
         /// </summary>
@@ -17,6 +19,39 @@ namespace AppleMusic_Discord_Status {
             this.InitializeWindow();
             this.InitializeToggleSwitches();
             this.UpdateStatusIcons();
+            this.Closed += MainWindow_Closed;
+        }
+
+        /// <summary>
+        /// Displays the window and brings it to the foreground.
+        /// </summary>
+        [RelayCommand]
+        private void ShowWindow() {
+            this.AppWindow.Show();
+            this.Activate();
+        }
+
+        /// <summary>
+        /// Closes app window and disposes of tray icon.
+        /// </summary>
+        [RelayCommand]
+        private void ExitApp() {
+            Debug.WriteLine("DEBUG: Exit command fired!");
+            _isExiting = true;
+            TrayIcon.Dispose();
+            this.Close();
+        }
+
+        /// <summary>
+        /// Intercepts window close event to hide app to system tray.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void MainWindow_Closed(object sender, WindowEventArgs args) {
+            if (!_isExiting) {
+                args.Handled = true;
+                this.AppWindow.Hide();
+            }
         }
 
         /// <summary>
