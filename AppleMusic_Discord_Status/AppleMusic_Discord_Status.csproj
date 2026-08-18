@@ -10,6 +10,7 @@
 		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
 		<GenerateTestArtifacts>True</GenerateTestArtifacts>
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+		<Nullable>enable</Nullable>
 		<OutputType>WinExe</OutputType>
 		<PackageCertificateThumbprint>54553424542B41E83C6B9AA8C73950BA4962A5E9</PackageCertificateThumbprint>
 		<PlatformTarget>x64</PlatformTarget>

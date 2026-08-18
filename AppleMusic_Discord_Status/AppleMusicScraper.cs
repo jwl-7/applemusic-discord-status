@@ -23,28 +23,28 @@ namespace AppleMusic_Discord_Status {
                 if (playerHandle == IntPtr.Zero) return null;
 
                 AutomationElement player = GetPlayerWindow(playerHandle);
-                if (player == null) return null;
+                if (player is null) return null;
 
                 AutomationElement bridge = GetBridgeElement(player);
-                if (bridge == null) return null;
+                if (bridge is null) return null;
 
                 AutomationElement inputSite = GetInputSiteElement(bridge);
-                if (inputSite == null) return null;
+                if (inputSite is null) return null;
 
                 AutomationElement navView = GetNavViewElement(inputSite);
-                if (navView == null) return null;
+                if (navView is null) return null;
 
                 AutomationElement transportBar = GetTransportBarElement(navView);
-                if (transportBar == null) return null;
+                if (transportBar is null) return null;
 
                 AutomationElement lcd = GetLcdElement(transportBar);
-                if (lcd == null) return null;
+                if (lcd is null) return null;
 
                 (string song, string artist, string album) = GetSongInfo(lcd);
-                if (song == null || artist == null || album == null) return null;
+                if (song is null || artist is null || album is null) return null;
 
-                string currentTimeString = GetCurrentTime(lcd);
-                string remainingTimeString = GetDuration(lcd);
+                string? currentTimeString = GetCurrentTime(lcd);
+                string? remainingTimeString = GetDuration(lcd);
                 int? currentTime = null;
                 int? remainingTime = null;
 
@@ -53,7 +53,7 @@ namespace AppleMusic_Discord_Status {
                     remainingTime = ParseTimeString(remainingTimeString);
                 } else {
                     // Calculate time info using slider progress and song duration
-                    RangeValuePattern slider = GetSlider(lcd);
+                    RangeValuePattern? slider = GetSlider(lcd);
 
                     if (slider != null && App.CurrentTrack.Duration != null) {
                         double sliderProgress = slider.Current.Value / slider.Current.Maximum;
@@ -201,7 +201,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="lcd">LCD element.</param>
         /// <returns>CurrentTime element.</returns>
-        private static string GetCurrentTime(AutomationElement lcd) {
+        private static string? GetCurrentTime(AutomationElement lcd) {
             AutomationElement currentTimeElement = lcd.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.AutomationIdProperty, "CurrentTime")
@@ -214,7 +214,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="lcd">LCD element.</param>
         /// <returns>Duration element.</returns>
-        private static string GetDuration(AutomationElement lcd) {
+        private static string? GetDuration(AutomationElement lcd) {
             AutomationElement durationElement = lcd.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.AutomationIdProperty, "Duration")
@@ -227,7 +227,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="lcd">LCD element.</param>
         /// <returns>Slider range values.</returns>
-        private static RangeValuePattern GetSlider(AutomationElement lcd) {
+        private static RangeValuePattern? GetSlider(AutomationElement lcd) {
             AutomationElement sliderElement = lcd.FindFirst(
                 TreeScope.Children,
                 new PropertyCondition(AutomationElement.AutomationIdProperty, "LCDScrubber")

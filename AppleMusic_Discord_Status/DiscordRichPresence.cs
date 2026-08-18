@@ -86,8 +86,8 @@ namespace AppleMusic_Discord_Status {
         /// <param name="currentTime">Start time (time elapsed) of the song.</param>
         /// <param name="remainingTime">End time (time left) of the song.</param>
         /// <returns></returns>
-        internal static Timestamps GetTimestamps(int? currentTime, int? remainingTime) {
-            if (currentTime == null || remainingTime == null) return null;
+        internal static Timestamps? GetTimestamps(int? currentTime, int? remainingTime) {
+            if (currentTime is null || remainingTime is null) return null;
 
             return new Timestamps() {
                 Start = DateTime.UtcNow - new TimeSpan(0, 0, (int)currentTime),
@@ -124,7 +124,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="input">Input string.</param>
         /// <returns>Formatted string.</returns>
-        internal static string SanitizeImageKey(string input, string defaultImage) {
+        internal static string SanitizeImageKey(string? input, string defaultImage) {
             if (string.IsNullOrWhiteSpace(input)) {
                 return defaultImage;
             }

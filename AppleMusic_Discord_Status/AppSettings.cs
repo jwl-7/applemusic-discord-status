@@ -86,7 +86,7 @@ namespace AppleMusic_Discord_Status {
         /// <returns>Settings object.</returns>
         internal static SettingsObject GetSettingsObject() {
             string JSON = File.ReadAllText(Constants.AppDataSettingsPath);
-            return JsonSerializer.Deserialize<SettingsObject>(JSON);
+            return JsonSerializer.Deserialize<SettingsObject>(JSON) ?? new SettingsObject();
         }
 
         /// <summary>
@@ -102,15 +102,16 @@ namespace AppleMusic_Discord_Status {
         /// Adds application shortcut to Windows startup folder, so that it launches at startup.
         /// </summary>
         internal static void AddStartupShortcut() {
-            Type t = Type.GetTypeFromCLSID(new Guid(Constants.WindowsScriptHostShellObjectGUID));
-            dynamic shell = Activator.CreateInstance(t);
+            Type? t = Type.GetTypeFromCLSID(new Guid(Constants.WindowsScriptHostShellObjectGUID));
+            if (t is null) return;
 
-            if (shell == null) return;
+            dynamic? shell = Activator.CreateInstance(t);
+            if (shell is null) return;
 
             try {
                 dynamic lnk = shell.CreateShortcut(Constants.AppShortcutPath);
 
-                if (lnk == null) {
+                if (lnk is null) {
                     Marshal.FinalReleaseComObject(shell);
                     return;
                 }

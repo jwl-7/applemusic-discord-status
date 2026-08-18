@@ -25,7 +25,7 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="args">Args containing event data.</param>
-        internal static void OnAppTimerElapsed(object sender, ElapsedEventArgs args) {
+        internal static void OnAppTimerElapsed(object? sender, ElapsedEventArgs args) {
             RefreshStatus();
         }
 
@@ -68,7 +68,7 @@ namespace AppleMusic_Discord_Status {
                 App.AppleMusicIsOpen &&
                 AppSettings.DisplayMusicStatusToggle
             ) {
-                AppleMusicMetadata metadata = await AppleMusicScraper.Scrape();
+                AppleMusicMetadata? metadata = await AppleMusicScraper.Scrape();
 
                 if (metadata is null) {
                     DiscordRichPresence.Dispose();
@@ -81,7 +81,7 @@ namespace AppleMusic_Discord_Status {
                 }
 
                 if (metadata.Song != App.CurrentTrack.Song) {
-                    ITunesMetadata metadataApi = await ITunesAPI.GetTrackMetadata(metadata.Song, metadata.Artist, metadata.Album);
+                    ITunesMetadata? metadataApi = await ITunesAPI.GetTrackMetadata(metadata.Song!, metadata.Artist!, metadata.Album!);
                     App.CurrentTrack.Duration = metadataApi?.Duration;
                     App.CurrentTrack.SongUrl = metadataApi?.SongUrl;
                     App.CurrentTrack.AlbumUrl = metadataApi?.AlbumUrl;
@@ -103,9 +103,9 @@ namespace AppleMusic_Discord_Status {
         /// Refreshes the status icons for Discord and Apple Music.
         /// </summary>
         internal static void RefreshStatusIcons() {
-            MainWindow window = (App.Current as App)?.MainWindow as MainWindow;
+            MainWindow? window = (App.Current as App)?.MainWindow as MainWindow;
 
-            window.DispatcherQueue.TryEnqueue(() => {
+            window?.DispatcherQueue.TryEnqueue(() => {
                 window.UpdateStatusIcons();
             });
         }

@@ -36,7 +36,6 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         [RelayCommand]
         private void ExitApp() {
-            Debug.WriteLine("DEBUG: Exit command fired!");
             _isExiting = true;
             TrayIcon.Dispose();
             this.Close();
@@ -58,7 +57,7 @@ namespace AppleMusic_Discord_Status {
         /// Initializes application window with customizations.
         /// </summary>
         internal void InitializeWindow() {
-            OverlappedPresenter appWindowPresenter = this.AppWindow.Presenter as OverlappedPresenter;
+            OverlappedPresenter appWindowPresenter = (OverlappedPresenter)this.AppWindow.Presenter;
 
             appWindowPresenter.IsResizable = false;
             appWindowPresenter.IsMaximizable = false;

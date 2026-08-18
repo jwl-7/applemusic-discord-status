@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Windows.Devices.AllJoyn;
 
 namespace AppleMusic_Discord_Status {
     /// <summary>
@@ -17,7 +18,7 @@ namespace AppleMusic_Discord_Status {
         /// <param name="artist">Name of the artist.</param>
         /// <param name="album">Optional name of the album for precise matching.</param>
         /// <returns>iTunesMetadata from iTunes API if found; otherwise, null.</returns>
-        internal static async Task<ITunesMetadata?> GetTrackMetadata(string song, string artist, string album = null) {
+        internal static async Task<ITunesMetadata?> GetTrackMetadata(string song, string artist, string? album = null) {
             string query = $"{song} {artist}";
             string url = $"{Constants.ITunesApiUrl}{Uri.EscapeDataString(query)}&entity=song&limit=10";
 
@@ -27,11 +28,12 @@ namespace AppleMusic_Discord_Status {
                 string responseBody = await response.Content.ReadAsStringAsync();
                 JObject json = JObject.Parse(responseBody);
 
-                if (json["resultCount"].ToObject<int>() > 0) {
-                    JToken result = json["results"][0];
+                if (json["resultCount"]?.ToObject<int>() > 0) {
+                    JToken? result = json["results"]?[0];
+                    if (result is null) return null;
 
                     if (!string.IsNullOrEmpty(album)) {
-                        foreach (JToken item in json["results"]) {
+                        foreach (JToken item in json["results"]!) {
                             string collectionName = item["collectionName"]?.ToString().ToLower() ?? "";
                             string artistName = item["artistName"]?.ToString().ToLower() ?? "";
 
@@ -47,11 +49,11 @@ namespace AppleMusic_Discord_Status {
 
                     int? durationSeconds = null;
                     if (result["trackTimeMillis"] != null) {
-                        int durationInMillis = (int)result["trackTimeMillis"];
+                        int durationInMillis = (int)result["trackTimeMillis"]!;
                         durationSeconds = durationInMillis / 1000;
                     }
 
-                    string artworkUrl = result["artworkUrl100"]?.ToString();
+                    string? artworkUrl = result["artworkUrl100"]?.ToString();
                     if (!string.IsNullOrEmpty(artworkUrl)) {
                         artworkUrl = artworkUrl.Replace("100x100bb", "1000x1000bb");
                     }
