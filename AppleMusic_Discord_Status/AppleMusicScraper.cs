@@ -2,7 +2,6 @@
 using System.Windows.Automation;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Numerics;
 
 
 namespace AppleMusic_Discord_Status {
@@ -14,81 +13,68 @@ namespace AppleMusic_Discord_Status {
     /// to some far off dimension, and it can no longer be found within the main window.
     /// </summary>
     internal class AppleMusicScraper {
-        private static readonly (
-            string, 
-            string, 
-            string,
-            int?,
-            int?, 
-            bool
-        ) DefaultReturn = (null, null, null, null, null, false);
-
         /// <summary>
         /// Scrapes information from the Apple Music Player.
         /// </summary>
-        /// <returns>A tuple containing song name, artist, album, song start, song end, and playing status.</returns>
-        public static async Task<(
-            string songName, 
-            string songArtist, 
-            string songAlbum, 
-            int? songStart, 
-            int? songEnd, 
-            bool isPlaying
-        )> Scrape() {
+        /// <returns>AppleMusicMetadata from the UI containing song name, artist, album, song start, song end, and playing status.</returns>
+        public static async Task<AppleMusicMetadata?> Scrape() {
             try {
                 nint playerHandle = GetPlayerWindowHandle();
-                if (playerHandle == IntPtr.Zero) return DefaultReturn;
+                if (playerHandle == IntPtr.Zero) return null;
 
                 AutomationElement player = GetPlayerWindow(playerHandle);
-                if (player == null) return DefaultReturn;
+                if (player == null) return null;
 
                 AutomationElement bridge = GetBridgeElement(player);
-                if (bridge == null) return DefaultReturn;
+                if (bridge == null) return null;
 
                 AutomationElement inputSite = GetInputSiteElement(bridge);
-                if (inputSite == null) return DefaultReturn;
+                if (inputSite == null) return null;
 
                 AutomationElement navView = GetNavViewElement(inputSite);
-                if (navView == null) return DefaultReturn;
+                if (navView == null) return null;
 
                 AutomationElement transportBar = GetTransportBarElement(navView);
-                if (transportBar == null) return DefaultReturn;
+                if (transportBar == null) return null;
 
                 AutomationElement lcd = GetLcdElement(transportBar);
-                if (lcd == null) return DefaultReturn;
+                if (lcd == null) return null;
 
-                (string songName, string songArtist, string songAlbum) = GetSongInfo(lcd);
-                if (songName == null || songArtist == null || songAlbum == null) return DefaultReturn;
+                (string song, string artist, string album) = GetSongInfo(lcd);
+                if (song == null || artist == null || album == null) return null;
 
-                string songStartTimeString = GetCurrentTime(lcd);
-                string songEndTimeString = GetDuration(lcd);
-                int? songStart = null;
-                int? songEnd = null;
+                string currentTimeString = GetCurrentTime(lcd);
+                string remainingTimeString = GetDuration(lcd);
+                int? currentTime = null;
+                int? remainingTime = null;
 
-                if (!string.IsNullOrWhiteSpace(songStartTimeString) && !string.IsNullOrWhiteSpace(songEndTimeString)) {
-                    songStart = ParseTimeString(songStartTimeString);
-                    songEnd = ParseTimeString(songEndTimeString);
+                if (!string.IsNullOrWhiteSpace(currentTimeString) && !string.IsNullOrWhiteSpace(remainingTimeString)) {
+                    currentTime = ParseTimeString(currentTimeString);
+                    remainingTime = ParseTimeString(remainingTimeString);
                 } else {
                     // Calculate time info using slider progress and song duration
                     RangeValuePattern slider = GetSlider(lcd);
 
-                    if (slider != null) {
-                        int? songDuration = await ITunesAPI.GetSongDuration(songName, songArtist);
-
-                        if (songDuration != null) {
-                            double sliderProgress = slider.Current.Value / slider.Current.Maximum;
-                            songStart = (int)(sliderProgress * songDuration);
-                            songEnd = (int)((1 - sliderProgress) * songDuration);
-                        }
+                    if (slider != null && App.CurrentTrack.Duration != null) {
+                        double sliderProgress = slider.Current.Value / slider.Current.Maximum;
+                        currentTime = (int)(sliderProgress * App.CurrentTrack.Duration);
+                        remainingTime = (int)((1 - sliderProgress) * App.CurrentTrack.Duration);
                     }
                 }
 
                 bool isPlaying = IsPlaying(transportBar);
 
-                return (songName, songArtist, songAlbum, songStart, songEnd, isPlaying);
+                return new AppleMusicMetadata {
+                    Song = song, 
+                    Artist = artist, 
+                    Album = album, 
+                    CurrentTime = currentTime, 
+                    RemainingTime = remainingTime,
+                    IsPlaying = isPlaying
+                };
             } catch (Exception ex) {
                 Debug.WriteLine($"Scraping failed: {ex.Message}");
-                return DefaultReturn;
+                return null;
             }
         }
 
@@ -196,18 +182,18 @@ namespace AppleMusic_Discord_Status {
         /// </summary>
         /// <param name="lcd">LCD element</param>
         /// <returns>A tuple with song name, song artist, and song album.</returns>
-        public static (string songName, string songArtist, string songAlbum) GetSongInfo(AutomationElement lcd) {
+        public static (string song, string artist, string album) GetSongInfo(AutomationElement lcd) {
             AutomationElementCollection scrollViewerChildren = GetScrollViewerChildren(lcd);
             AutomationElement firstChild = scrollViewerChildren[0];
             AutomationElement secondChild = scrollViewerChildren[1];
 
-            string songName = SanitizeData(firstChild.Current.Name);
-            string rawSongInfo = SanitizeData(secondChild.Current.Name);
-            string[] songInfo = rawSongInfo.Split(['—'], 2);
-            string songArtist = songInfo[0].Trim();
-            string songAlbum = songInfo[1].Trim();
+            string song = SanitizeData(firstChild.Current.Name);
+            string rawInfo = SanitizeData(secondChild.Current.Name);
+            string[] info = rawInfo.Split(['—'], 2);
+            string artist = info[0].Trim();
+            string album = info[1].Trim();
 
-            return (songName, songArtist, songAlbum);
+            return (song, artist, album);
         }
 
         /// <summary>

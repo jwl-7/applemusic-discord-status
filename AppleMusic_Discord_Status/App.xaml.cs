@@ -10,10 +10,8 @@ namespace AppleMusic_Discord_Status {
     public partial class App : Application {
         internal Window MainWindow;
         internal static Timer AppTimer;
+        internal static TrackData CurrentTrack = new();
         internal static DiscordRpcClient DiscordClient;
-        internal static string CurrentSong;
-        internal static string CurrentAlbumArtwork;
-        internal static string CurrentSongUrl;
         internal static bool DiscordClientIsInitialized;
         internal static bool DiscordIsOpen;
         internal static bool AppleMusicIsOpen;

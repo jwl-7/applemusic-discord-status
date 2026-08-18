@@ -68,35 +68,34 @@ namespace AppleMusic_Discord_Status {
                 App.AppleMusicIsOpen &&
                 AppSettings.DisplayMusicStatusToggle
             ) {
-                (
-                    string songName, 
-                    string songArtist, 
-                    string songAlbum, 
-                    int? songStart,
-                    int? songEnd,
-                    bool isPlaying
-                ) = await AppleMusicScraper.Scrape();
+                AppleMusicMetadata metadata = await AppleMusicScraper.Scrape();
 
-                if (!isPlaying && !AppSettings.ShowStatusOnPauseToggle) {
+                if (metadata is null) {
                     DiscordRichPresence.Dispose();
                     return;
                 }
 
-                if (songName != App.CurrentSong) {
-                    App.CurrentSong = songName;
-                    App.CurrentAlbumArtwork = await ITunesAPI.GetAlbumArtworkUrl(songAlbum, songArtist);
-                    App.CurrentSongUrl = await ITunesAPI.GetSongLink(songName, songArtist);
+                if (!metadata.IsPlaying && !AppSettings.ShowStatusOnPauseToggle) {
+                    DiscordRichPresence.Dispose();
+                    return;
                 }
 
-                DiscordRichPresence.UpdatePresence(
-                    details: App.CurrentSong ?? "",
-                    state: $"by {songArtist} — {songAlbum}",
-                    albumArtwork: App.CurrentAlbumArtwork,
-                    songStart: songStart,
-                    songEnd: songEnd,
-                    songUrl: App.CurrentSongUrl,
-                    isPlaying: isPlaying
-                );
+                if (metadata.Song != App.CurrentTrack.Song) {
+                    ITunesMetadata metadataApi = await ITunesAPI.GetTrackMetadata(metadata.Song, metadata.Artist, metadata.Album);
+                    App.CurrentTrack.Duration = metadataApi?.Duration;
+                    App.CurrentTrack.SongUrl = metadataApi?.SongUrl;
+                    App.CurrentTrack.AlbumUrl = metadataApi?.AlbumUrl;
+                    App.CurrentTrack.ArtworkUrl = metadataApi?.ArtworkUrl;
+                }
+
+                App.CurrentTrack.Song = metadata.Song;
+                App.CurrentTrack.Artist = metadata.Artist;
+                App.CurrentTrack.Album = metadata.Album;
+                App.CurrentTrack.CurrentTime = metadata.CurrentTime;
+                App.CurrentTrack.RemainingTime = metadata.RemainingTime;
+                App.CurrentTrack.IsPlaying = metadata.IsPlaying;
+
+                DiscordRichPresence.UpdatePresence();
             }
         }
 

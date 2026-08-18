@@ -42,41 +42,26 @@ namespace AppleMusic_Discord_Status {
         /// <summary>
         /// Updates Discord Status via Rich Presence with Apple Music song info.
         /// </summary>
-        /// <param name="details">The details with song name.</param>
-        /// <param name="state">The state with artist/album.</param>
-        /// <param name="albumArtwork">Apple Music song album artwork URL.</param>
-        /// <param name="songStart">Time elapsed in the song.</param>
-        /// <param name="songEnd">Time left in the song.</param>
-        /// <param name="songUrl">Apple Music song URL.</param>
-        /// <param name="isPlaying">Whether or not the song is playing/paused.</param>
-        internal static void UpdatePresence(
-            string details,
-            string state,
-            string albumArtwork,
-            int? songStart,
-            int? songEnd,
-            string songUrl,
-            bool isPlaying
-        ) {
+        internal static void UpdatePresence() {
             if (!App.DiscordClientIsInitialized) {
                 InitializeDiscordClient();
             }
 
             if (App.DiscordClientIsInitialized) {
                 RichPresence presence = new() {
-                    Details = SanitizeText(details),
-                    State = SanitizeText(state),
-                    Timestamps = isPlaying ? GetTimestamps(songStart, songEnd) : null,
+                    Details = SanitizeText(App.CurrentTrack.Song ?? ""),
+                    State = SanitizeText($"by {App.CurrentTrack.Artist} — {App.CurrentTrack.Album}"),
+                    Timestamps = App.CurrentTrack.IsPlaying ? GetTimestamps(App.CurrentTrack.CurrentTime, App.CurrentTrack.RemainingTime) : null,
                     Assets = new Assets() {
-                        LargeImageKey = SanitizeImageKey(albumArtwork, Constants.DiscordDefaultArtwork),
-                        SmallImageKey = isPlaying ? Constants.DiscordPlayingIcon : Constants.DiscordPausedIcon,
+                        LargeImageKey = SanitizeImageKey(App.CurrentTrack.ArtworkUrl, Constants.DiscordDefaultArtwork),
+                        SmallImageKey = App.CurrentTrack.IsPlaying ? Constants.DiscordPlayingIcon : Constants.DiscordPausedIcon,
                         SmallImageText = Constants.DiscordSmallImageText
                     },
                     Type = ActivityType.Listening,
                     Buttons = [
                         new() {
                             Label = Constants.DiscordButtonLabel,
-                            Url = songUrl ?? Constants.AppleMusicUrl
+                            Url = App.CurrentTrack.SongUrl ?? Constants.AppleMusicUrl
                         }
                     ]
                 };
@@ -98,79 +83,25 @@ namespace AppleMusic_Discord_Status {
         /// <summary>
         /// Gets the timestamps for displaying the song time progress.
         /// </summary>
-        /// <param name="songStart">Start time (time elapsed) of the song.</param>
-        /// <param name="songEnd">End time (time left) of the song.</param>
+        /// <param name="currentTime">Start time (time elapsed) of the song.</param>
+        /// <param name="remainingTime">End time (time left) of the song.</param>
         /// <returns></returns>
-        public static Timestamps GetTimestamps(int? songStart, int? songEnd) {
-            if (songStart == null || songEnd == null) return null;
+        internal static Timestamps GetTimestamps(int? currentTime, int? remainingTime) {
+            if (currentTime == null || remainingTime == null) return null;
 
             return new Timestamps() {
-                Start = DateTime.UtcNow - new TimeSpan(0, 0, (int)songStart),
-                End = DateTime.UtcNow + new TimeSpan(0, 0, (int)songEnd)
+                Start = DateTime.UtcNow - new TimeSpan(0, 0, (int)currentTime),
+                End = DateTime.UtcNow + new TimeSpan(0, 0, (int)remainingTime)
             };
         }
 
         /// <summary>
-        /// Parses time string scraped from Apple Music into seconds.
-        /// </summary>
-        /// <param name="timeString">Time string in (-)H:MM:SS format.</param>
-        /// <returns>Time in seconds.</returns>
-        public static int ParseTimeString(string timeString) {
-            if (string.IsNullOrWhiteSpace(timeString)) {
-                return 0;
-            }
-
-            // Remove the '-' at the beginning
-            timeString = timeString.TrimStart('-');
-            string[] timeParts = timeString.Split(':');
-            int hours = 0, minutes = 0, seconds;
-
-            try {
-                if (timeParts.Length == 1) {
-                    // Format: SS
-                    if (!int.TryParse(timeParts[0], out seconds) || seconds < 0 || seconds > 59) {
-                        throw new FormatException();
-                    }
-                } else if (timeParts.Length == 2) {
-                    if (timeParts[0] == string.Empty) {
-                        // Format: :SS
-                        if (!int.TryParse(timeParts[1], out seconds) || seconds < 0 || seconds > 59) {
-                            throw new FormatException();
-                        }
-                    } else {
-                        // Format: M:SS
-                        if (!int.TryParse(timeParts[0], out minutes) || minutes < 0 || minutes > 59 ||
-                            !int.TryParse(timeParts[1], out seconds) || seconds < 0 || seconds > 59) {
-                            throw new FormatException();
-                        }
-                    }
-                } else if (timeParts.Length == 3) {
-                    // Format: H:MM:SS
-                    if (!int.TryParse(timeParts[0], out hours) || hours < 0 ||
-                        !int.TryParse(timeParts[1], out minutes) || minutes < 0 || minutes > 59 ||
-                        !int.TryParse(timeParts[2], out seconds) || seconds < 0 || seconds > 59) {
-                        throw new FormatException();
-                    }
-                } else {
-                    throw new FormatException();
-                }
-            } catch (FormatException) {
-                Debug.WriteLine("Invalid time string format: " + timeString);
-                return 0;
-            }
-
-            int totalSeconds = hours * 3600 + minutes * 60 + seconds;
-            Debug.WriteLine("Parsed time in seconds: " + totalSeconds);
-            return totalSeconds;
-        }
-
-        /// <summary>
         /// Sanitizes text string for DiscordRPC.
-        /// Max text = 128 bytes
+        /// Max text = 128 characters.
         /// </summary>
         /// <param name="input">Input string.</param>
         /// <returns>Formatted string.</returns>
-        public static string SanitizeText(string input) {
+        internal static string SanitizeText(string input) {
             if (string.IsNullOrWhiteSpace(input)) {
                 return "  ";
             }
@@ -179,31 +110,21 @@ namespace AppleMusic_Discord_Status {
                 return input.PadRight(2, ' ');
             }
 
-            int currBytes = Encoding.UTF8.GetByteCount(input);
-
-            if (currBytes <= Constants.DiscordMaxTextBytes) {
+            if (input.Length <= Constants.DiscordMaxTextLength) {
                 return input;
             }
 
-            int ellipsisBytes = Encoding.UTF8.GetByteCount(Constants.Ellipsis);
-            int targetBytes = Constants.DiscordMaxTextBytes - ellipsisBytes;
-            string output = input;
-
-            while (currBytes > targetBytes && output.Length > 0) {
-                output = output.Substring(0, output.Length - 1);
-                currBytes = Encoding.UTF8.GetByteCount(output);
-            }
-
-            return output + Constants.Ellipsis;
+            int targetLength = Constants.DiscordMaxTextLength - Constants.Ellipsis.Length;
+            return input[..targetLength] + Constants.Ellipsis;
         }
 
         /// <summary>
         /// Sanitizes image string for DiscordRPC.
-        /// Max image = 32 bytes
+        /// Max image string = 256 characters
         /// </summary>
         /// <param name="input">Input string.</param>
         /// <returns>Formatted string.</returns>
-        public static string SanitizeImageKey(string input, string defaultImage) {
+        internal static string SanitizeImageKey(string input, string defaultImage) {
             if (string.IsNullOrWhiteSpace(input)) {
                 return defaultImage;
             }
