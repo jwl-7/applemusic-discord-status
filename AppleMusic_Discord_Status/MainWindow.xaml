@@ -150,6 +150,8 @@
                 <MenuFlyout>
                     <MenuFlyoutItem Text="Open" Command="{x:Bind ShowWindowCommand}" />
                     <MenuFlyoutSeparator />
+                    <MenuFlyoutItem Text="Check for Updates" Command="{x:Bind CheckForUpdatesCommand}" />
+                    <MenuFlyoutSeparator />
                     <MenuFlyoutItem Text="Exit" Command="{x:Bind ExitAppCommand}" />
                 </MenuFlyout>
             </tb:TaskbarIcon.ContextFlyout>
