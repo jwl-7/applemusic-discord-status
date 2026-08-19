@@ -1,15 +1,25 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Windows.Graphics;
+using WinRT.Interop;
 
 namespace AppleMusic_Discord_Status {
     /// <summary>
     /// Main Window class.
     /// </summary>
     public sealed partial class MainWindow : Window {
-        private bool _isExiting = false;
+        private bool _isExitingWindow = false;
+        private bool _isInitialStartup = true;
+
+        [DllImport("user32.dll")]
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll")]
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
         /// <summary>
         /// Initializes main UI window.
@@ -19,38 +29,8 @@ namespace AppleMusic_Discord_Status {
             this.InitializeWindow();
             this.InitializeToggleSwitches();
             this.UpdateStatusIcons();
+            this.Activated += MainWindow_Activated;
             this.Closed += MainWindow_Closed;
-        }
-
-        /// <summary>
-        /// Displays the window and brings it to the foreground.
-        /// </summary>
-        [RelayCommand]
-        private void ShowWindow() {
-            this.AppWindow.Show();
-            this.Activate();
-        }
-
-        /// <summary>
-        /// Closes app window and disposes of tray icon.
-        /// </summary>
-        [RelayCommand]
-        private void ExitApp() {
-            _isExiting = true;
-            TrayIcon.Dispose();
-            this.Close();
-        }
-
-        /// <summary>
-        /// Intercepts window close event to hide app to system tray.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void MainWindow_Closed(object sender, WindowEventArgs args) {
-            if (!_isExiting) {
-                args.Handled = true;
-                this.AppWindow.Hide();
-            }
         }
 
         /// <summary>
@@ -64,8 +44,10 @@ namespace AppleMusic_Discord_Status {
 
             this.AppWindow.Resize(new SizeInt32(Constants.AppWindowWidth, Constants.AppWindowHeight));
             this.AppWindow.SetIcon(Constants.AppIcon);
-            this.Title = "Apple Music � Discord Status";
+            this.Title = "Apple Music — Discord Status";
             this.ExtendsContentIntoTitleBar = true;
+
+            this.EnableLayeredWindow();
         }
 
         /// <summary>
@@ -85,6 +67,63 @@ namespace AppleMusic_Discord_Status {
             this.LaunchAtStartupToggleSwitch.Toggled += (sender, args) => {
                 AppSettings.LaunchAtStartupToggle = this.LaunchAtStartupToggleSwitch.IsOn;
             };
+        }
+
+        /// <summary>
+        /// Handles initial windows activation event to hide app to system tray on initial startup.
+        /// </summary>
+        /// <param name="sender">Event source.</param>
+        /// <param name="args">Event data.</param>
+        private void MainWindow_Activated(object sender, WindowActivatedEventArgs args) {
+            if (_isInitialStartup) {
+                _isInitialStartup = false;
+                bool isStartup = Environment.GetCommandLineArgs().Contains("--startup");
+                if (isStartup) this.AppWindow.Hide();
+            }
+        }
+
+        /// <summary>
+        /// Intercepts window close event to hide app to system tray.
+        /// </summary>
+        /// <param name="sender">Event source.</param>
+        /// <param name="args">Event data.</param>
+        private void MainWindow_Closed(object sender, WindowEventArgs args) {
+            if (!_isExitingWindow) {
+                args.Handled = true;
+                this.AppWindow.Hide();
+            }
+        }
+
+        /// <summary>
+        /// Enables Win32 extended style layered window.
+        /// This helps with preventing window flashing when starting app hidden in the system tray.
+        /// </summary>
+        private void EnableLayeredWindow() {
+            IntPtr windowHandle = WindowNative.GetWindowHandle(this);
+            int exStyle = GetWindowLong(windowHandle, Constants.WinExStyle);
+            int updatedStyle = exStyle | Constants.WinExStyleLayered;
+            _ = SetWindowLong(windowHandle, Constants.WinExStyle, updatedStyle);
+        }
+
+        /// <summary>
+        /// Displays the window and brings it to the foreground.
+        /// </summary>
+        [RelayCommand]
+        private void ShowWindow() {
+            Debug.WriteLine("Showing Window");
+            this.AppWindow.Show();
+            this.Activate();
+        }
+
+        /// <summary>
+        /// Closes app window and disposes of tray icon.
+        /// </summary>
+        [RelayCommand]
+        private void ExitApp() {
+            Debug.WriteLine("Exiting Window");
+            _isExitingWindow = true;
+            TrayIcon.Dispose();
+            this.Close();
         }
 
         /// <summary>

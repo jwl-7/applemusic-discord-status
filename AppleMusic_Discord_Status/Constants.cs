@@ -5,7 +5,7 @@ using System.IO;
 
 namespace AppleMusic_Discord_Status {
     /// <summary>
-    /// Application constants. 
+    /// Application constants.
     /// </summary>
     internal class Constants {
         internal const int AppWindowHeight = 400;
@@ -15,6 +15,9 @@ namespace AppleMusic_Discord_Status {
 
         internal const int DiscordMaxTextLength = 128;
         internal const int DiscordMaxKeyLength = 256;
+
+        internal const int WinExStyle = -20;
+        internal const int WinExStyleLayered = 0x00080000;
 
         internal const string Ellipsis = "…";
         internal const string AppName = "AppleMusic_Discord_Status";
