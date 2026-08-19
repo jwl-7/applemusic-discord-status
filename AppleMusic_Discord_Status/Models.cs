@@ -1,4 +1,7 @@
 ﻿namespace AppleMusic_Discord_Status {
+    /// <summary>
+    /// Internal app state to track currently playing track.
+    /// </summary>
     internal class TrackData {
         internal string? Song { get; set; }
         internal string? Artist { get; set; }
@@ -13,7 +16,7 @@
     }
 
     /// <summary>
-    /// Represents metadata fetched from the Apple iTunes API.
+    /// Metadata fetched from the Apple iTunes API.
     /// </summary>
     internal class ITunesMetadata {
         internal string? SongUrl { get; set; }
@@ -22,6 +25,9 @@
         internal int? Duration { get; set; }
     }
 
+    /// <summary>
+    /// Metadata fetched from the Apple Music UI.
+    /// </summary>
     internal class AppleMusicMetadata {
         internal string? Song { get; set; }
         internal string? Artist { get; set; }
