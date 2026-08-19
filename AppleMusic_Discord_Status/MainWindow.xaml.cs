@@ -80,6 +80,7 @@ namespace AppleMusic_Discord_Status {
                 _isInitialStartup = false;
                 bool isStartup = Environment.GetCommandLineArgs().Contains("--startup");
                 if (isStartup) this.AppWindow.Hide();
+                this.DisableLayeredWindow();
             }
         }
 
@@ -103,6 +104,17 @@ namespace AppleMusic_Discord_Status {
             IntPtr windowHandle = WindowNative.GetWindowHandle(this);
             int exStyle = GetWindowLong(windowHandle, Constants.WinExStyle);
             int updatedStyle = exStyle | Constants.WinExStyleLayered;
+            _ = SetWindowLong(windowHandle, Constants.WinExStyle, updatedStyle);
+        }
+
+        /// <summary>
+        /// Disables Win32 extended style layered window.
+        /// This helps prevent styles from being overridden due to enabling layered window.
+        /// </summary>
+        private void DisableLayeredWindow() {
+            IntPtr windowHandle = WindowNative.GetWindowHandle(this);
+            int exStyle = GetWindowLong(windowHandle, Constants.WinExStyle);
+            int updatedStyle = exStyle & ~Constants.WinExStyleLayered;
             _ = SetWindowLong(windowHandle, Constants.WinExStyle, updatedStyle);
         }
 
