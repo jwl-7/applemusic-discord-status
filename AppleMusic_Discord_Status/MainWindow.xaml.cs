@@ -127,105 +127,17 @@ namespace AppleMusic_Discord_Status {
             this.Close();
         }
 
+        /// <summary>
+        /// Checks for updates and opens the update dialog.
+        /// </summary>
+        /// <returns>The async task.</returns>
         [RelayCommand]
         private async System.Threading.Tasks.Task CheckForUpdatesAsync() {
             try {
-                using var client = new System.Net.Http.HttpClient();
-                client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("AppleMusicDiscordStatus", "1.0.6"));
-
-                string url = "https://api.github.com/repos/jwl-7/applemusic-discord-status/releases/latest";
-                string json = await client.GetStringAsync(url);
-
-                using var doc = System.Text.Json.JsonDocument.Parse(json);
-                string? latestTag = doc.RootElement.GetProperty("tag_name").GetString();
-                string? currentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
-
-                bool isUpToDate = latestTag == null || latestTag.TrimStart('v') == currentVersion;
-
-                var outerPanel = new Microsoft.UI.Xaml.Controls.StackPanel {
-                    HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Center,
-                    Spacing = 12
-                };
-
-                outerPanel.Children.Add(new Microsoft.UI.Xaml.Controls.TextBlock {
-                    Text = isUpToDate ? "Up to Date" : "Update Available",
-                    FontWeight = Microsoft.UI.Text.FontWeights.Bold,
-                    FontSize = 20,
-                    HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Center,
-                    TextAlignment = Microsoft.UI.Xaml.TextAlignment.Center
-                });
-
-                var grid = new Microsoft.UI.Xaml.Controls.Grid {
-                    HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Center,
-                    RowSpacing = 6,
-                    ColumnSpacing = 8
-                };
-                grid.ColumnDefinitions.Add(new Microsoft.UI.Xaml.Controls.ColumnDefinition { Width = new Microsoft.UI.Xaml.GridLength(40, Microsoft.UI.Xaml.GridUnitType.Pixel) });
-                grid.ColumnDefinitions.Add(new Microsoft.UI.Xaml.Controls.ColumnDefinition { Width = new Microsoft.UI.Xaml.GridLength(1, Microsoft.UI.Xaml.GridUnitType.Auto) });
-
-                int row = 0;
-
-                if (!isUpToDate) {
-                    grid.RowDefinitions.Add(new Microsoft.UI.Xaml.Controls.RowDefinition());
-
-                    var latestLabel = new Microsoft.UI.Xaml.Controls.TextBlock {
-                        Text = "Latest:",
-                        FontSize = 16,
-                        HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Right
-                    };
-                    Microsoft.UI.Xaml.Controls.Grid.SetRow(latestLabel, row);
-                    Microsoft.UI.Xaml.Controls.Grid.SetColumn(latestLabel, 0);
-                    grid.Children.Add(latestLabel);
-
-                    var latestValue = new Microsoft.UI.Xaml.Controls.TextBlock {
-                        Text = latestTag ?? "Unknown",
-                        FontSize = 16,
-                        HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Left
-                    };
-                    Microsoft.UI.Xaml.Controls.Grid.SetRow(latestValue, row);
-                    Microsoft.UI.Xaml.Controls.Grid.SetColumn(latestValue, 1);
-                    grid.Children.Add(latestValue);
-
-                    row++;
-                }
-
-                grid.RowDefinitions.Add(new Microsoft.UI.Xaml.Controls.RowDefinition());
-
-                var versionLabel = new Microsoft.UI.Xaml.Controls.TextBlock {
-                    Text = "Version:",
-                    FontSize = 16,
-                    HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Right
-                };
-                Microsoft.UI.Xaml.Controls.Grid.SetRow(versionLabel, row);
-                Microsoft.UI.Xaml.Controls.Grid.SetColumn(versionLabel, 0);
-                grid.Children.Add(versionLabel);
-
-                var versionValue = new Microsoft.UI.Xaml.Controls.TextBlock {
-                    Text = $"{currentVersion ?? "Unknown"} {(isUpToDate ? "✅" : "❌")}",
-                    FontSize = 16,
-                    HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Left
-                };
-                Microsoft.UI.Xaml.Controls.Grid.SetRow(versionValue, row);
-                Microsoft.UI.Xaml.Controls.Grid.SetColumn(versionValue, 1);
-                grid.Children.Add(versionValue);
-
-                outerPanel.Children.Add(grid);
-
-                ContentDialog dialog = new ContentDialog {
-                    Content = outerPanel,
-                    CloseButtonText = "Close",
-                    PrimaryButtonText = isUpToDate ? "" : "Download",
+                var dialog = new UpdateDialog {
                     XamlRoot = this.Content.XamlRoot
                 };
-
-                ContentDialogResult result = await dialog.ShowAsync();
-
-                if (!isUpToDate && result == ContentDialogResult.Primary) {
-                    Process.Start(new ProcessStartInfo {
-                        FileName = "https://github.com/jwl-7/applemusic-discord-status/releases/latest",
-                        UseShellExecute = true
-                    });
-                }
+                await dialog.ShowAsync();
             } catch {
                 // Fail silently
             }

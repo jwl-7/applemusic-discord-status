@@ -35,6 +35,7 @@ namespace AppleMusic_Discord_Status {
         internal const string DiscordSmallImageText = "Apple Music";
         internal const string DiscordToken = "1240579407635157042";
         internal const string ITunesApiUrl = "https://itunes.apple.com/search?term=";
+        internal const string GithubReleaseUrl = "https://api.github.com/repos/jwl-7/applemusic-discord-status/releases/latest";
         internal const string WindowsScriptHostShellObjectGUID = "72C24DD5-D70A-438B-8A42-98424B88AFB8";
 
         internal static string AppExePath = Process.GetCurrentProcess().MainModule?.FileName!;
