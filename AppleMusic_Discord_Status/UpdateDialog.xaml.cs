@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -15,6 +16,9 @@ namespace AppleMusic_Discord_Status {
         public string CurrentVersionDisplay { get; private set; } = string.Empty;
         public new string PrimaryButtonText { get; private set; } = string.Empty;
         public Visibility ShowLatest { get; private set; } = Visibility.Collapsed;
+
+        public string StatusGlyph { get; private set; } = Constants.Cancel;
+        public Brush StatusBrush { get; private set; } = new SolidColorBrush(Microsoft.UI.Colors.IndianRed);
 
         private bool _isUpToDate = true;
 
@@ -43,16 +47,20 @@ namespace AppleMusic_Discord_Status {
 
                 _isUpToDate = LatestTag == null || LatestTag.TrimStart('v') == currentVersion;
 
-                StatusTitle = _isUpToDate ? "Up to Date" : "Update Available";
-                CurrentVersionDisplay = $"{currentVersion ?? "Unknown"} {(_isUpToDate ? "✅" : "❌")}";
+                StatusTitle = _isUpToDate ? "Current" : "Outdated";
+                CurrentVersionDisplay = currentVersion ?? "Unknown";
                 PrimaryButtonText = _isUpToDate ? string.Empty : "Download";
                 ShowLatest = _isUpToDate ? Visibility.Collapsed : Visibility.Visible;
+                StatusGlyph = _isUpToDate ? Constants.CheckMark : Constants.Cancel;
+                StatusBrush = _isUpToDate
+                    ? new SolidColorBrush(Microsoft.UI.Colors.Green)
+                    : new SolidColorBrush(Microsoft.UI.Colors.IndianRed);
 
                 // Force layout update if bindings don't auto-refresh post-constructor load
                 this.Bindings.Update();
             } catch {
                 StatusTitle = "Check Failed";
-                CurrentVersionDisplay = "Unknown ❌";
+                CurrentVersionDisplay = "Unknown";
             }
         }
 

@@ -11,54 +11,91 @@
     PrimaryButtonText="{x:Bind PrimaryButtonText, Mode=OneWay}"
     PrimaryButtonCommand="{x:Bind DownloadCommand}">
 
-    <StackPanel HorizontalAlignment="Center" Spacing="12">
+    <StackPanel HorizontalAlignment="Center" Spacing="16">
+        <!-- Static Dialog Title -->
         <TextBlock
-            Text="{x:Bind StatusTitle, Mode=OneWay}"
-            FontWeight="Bold"
-            FontSize="20"
+            Text="Check for Updates"
+            FontSize="26"
+            FontWeight="SemiBold"
             HorizontalAlignment="Center"
             TextAlignment="Center" />
 
         <Grid
             HorizontalAlignment="Center"
-            RowSpacing="6"
-            ColumnSpacing="8"
-            Margin="-37,0,0,0">
+            Margin="16,0,0,0"
+            RowSpacing="8"
+            ColumnSpacing="6">
 
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
+            <!-- Status Row ("Up to Date" or "Out of Date") -->
+            <TextBlock
+                Text="Status:"
+                FontSize="20"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center" />
+
+            <TextBlock
+                Text="{x:Bind StatusTitle, Mode=OneWay}"
+                FontSize="20"
+                Grid.Column="1"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Margin="8,0,0,0" />
+
+            <FontIcon 
+                Glyph="{x:Bind StatusGlyph, Mode=OneWay}" 
+                Foreground="{x:Bind StatusBrush, Mode=OneWay}"
+                Grid.Column="2" 
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                Margin="2,6,0,0"
+                FontSize="20" />
+
+            <!-- Latest Version Row -->
             <TextBlock
                 Text="Latest:"
-                FontSize="16"
+                FontSize="20"
                 HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Grid.Row="1"
                 Visibility="{x:Bind ShowLatest, Mode=OneWay}" />
 
             <TextBlock
                 Text="{x:Bind LatestTag, Mode=OneWay}"
-                FontSize="16"
+                FontSize="20"
                 Grid.Column="1"
+                Grid.Row="1"
                 HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Margin="8,0,0,0"
                 Visibility="{x:Bind ShowLatest, Mode=OneWay}" />
 
+            <!-- Current Version Row -->
             <TextBlock
                 Text="Version:"
-                FontSize="16"
+                FontSize="20"
                 HorizontalAlignment="Right"
-                Grid.Row="1" />
+                VerticalAlignment="Center"
+                Grid.Row="2" />
 
             <TextBlock
                 Text="{x:Bind CurrentVersionDisplay, Mode=OneWay}"
-                FontSize="16"
+                FontSize="20"
                 Grid.Column="1"
-                Grid.Row="1"
-                HorizontalAlignment="Left" />
+                Grid.Row="2"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Margin="8,0,0,0" />
         </Grid>
     </StackPanel>
 </ContentDialog>
